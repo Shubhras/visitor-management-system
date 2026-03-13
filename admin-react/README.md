@@ -27,7 +27,7 @@ Follow these instructions to get the project up and running on your local machin
 3. **Environment Setup**:
    Create a `.env` file in the root directory (copy from `.env.example` if available) and configure your API base URL:
    ```bash
-   VITE_API_BASE_URL=http://localhost:8000/index.php/api
+   VITE_API_BASE_URL=http://localhost:8000/
    VITE_APP_NAME="Visitor Management Admin"
    ```
 
@@ -35,7 +35,7 @@ Follow these instructions to get the project up and running on your local machin
    ```bash
    npm run dev
    ```
-   Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+   Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ---
 

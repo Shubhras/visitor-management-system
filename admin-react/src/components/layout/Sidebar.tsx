@@ -1,9 +1,6 @@
 import React from 'react';
 import {
     Box,
-    Toolbar,
-    Typography,
-    Divider,
     List,
     ListItem,
     ListItemButton,
@@ -36,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                bgcolor: 'primary.light', // Using theme's light blue
+                bgcolor: 'primary.light',
                 pt: 8
             }}
         >
@@ -53,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
                                 py: 1.5,
                                 px: 3,
                                 '&.Mui-selected': {
-                                    bgcolor: 'secondary.light', // Theme purple selection
+                                    bgcolor: 'secondary.light',
                                     color: 'text.primary',
                                     '&:hover': {
                                         bgcolor: 'secondary.light',
@@ -87,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
                         '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.04)' }
                     }}
                 >
-                    <ListItemIcon sx={{ minWidth: 40, color: 'error.main' }}>
+                    <ListItemIcon sx={{ minWidth: 40 }}>
                         <LogoutIcon />
                     </ListItemIcon>
                     <ListItemText primary="Logout" />

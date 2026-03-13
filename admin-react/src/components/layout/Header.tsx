@@ -98,28 +98,36 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                     >
                         admin
                     </Typography>
-
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleClose}
-                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                    >
-                        <MenuItem onClick={handleClose}>
-                            <ListItemIcon>
-                                <PersonIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Profile</ListItemText>
-                        </MenuItem>
-                        <MenuItem onClick={handleLogout}>
-                            <ListItemIcon>
-                                <LogoutIcon fontSize="small" color="error" />
-                            </ListItemIcon>
-                            <ListItemText sx={{ color: 'error.main' }}>Logout</ListItemText>
-                        </MenuItem>
-                    </Menu>
                 </Box>
+
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    PaperProps={{
+                        sx: {
+                            mt: 1.5,
+                            minWidth: 180,
+                            boxShadow: '0px 5px 15px rgba(0,0,0,0.1)',
+                            borderRadius: 1
+                        }
+                    }}
+                >
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            <PersonIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Profile</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => { handleClose(); handleLogout(); }}>
+                        <ListItemIcon>
+                            <LogoutIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText sx={{ color: 'error.main' }}>Logout</ListItemText>
+                    </MenuItem>
+                </Menu>
             </Toolbar>
         </AppBar>
     );

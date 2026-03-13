@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import {
     Box,
     Drawer,
@@ -60,7 +60,7 @@ const Layout: React.FC = () => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 0, // Content handles its own padding
+                    p: 0, 
                     width: { md: open ? `calc(100% - ${drawerWidth}px)` : '100%' },
                     transition: theme.transitions.create(['margin', 'width'], {
                         easing: theme.transitions.easing.sharp,

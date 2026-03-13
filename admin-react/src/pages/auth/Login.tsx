@@ -27,7 +27,7 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
-    const [showPassword, setShowPassword] = useState(false);
+    const theme = useTheme();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
@@ -57,23 +57,24 @@ const Login: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#ffffff',
-                backgroundImage: `radial-gradient(#e5e7eb 1px, transparent 1px), radial-gradient(#e5e7eb 1px, transparent 1px)`,
+                backgroundColor: theme.palette.background.default,
+                backgroundImage: `radial-gradient(${theme.palette.divider} 1px, transparent 1px), radial-gradient(${theme.palette.divider} 1px, transparent 1px)`,
                 backgroundSize: '40px 40px',
                 backgroundPosition: '0 0, 20px 20px',
                 p: { xs: 2, md: 4 },
             }}
         >
             <Paper
-                elevation={24}
+                elevation={0}
                 sx={{
                     width: '100%',
                     maxWidth: '1000px',
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
                     overflow: 'hidden',
-                    borderRadius: 2,
-                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    borderRadius: '24px',
+                    boxShadow: '0px 20px 50px rgba(0, 0, 0, 0.05)',
+                    border: `1px solid ${theme.palette.divider}`,
                 }}
             >
                 {/* Left Side - Image and Logo */}
@@ -101,11 +102,11 @@ const Login: React.FC = () => {
                 >
                     <Box sx={{ position: 'relative', zIndex: 1 }}>
                         <Typography
-                            variant="h4"
+                            variant="h3"
                             sx={{
                                 fontWeight: 900,
-                                color: '#1a1a1a',
-                                letterSpacing: '-1px',
+                                color: theme.palette.text.primary,
+                                letterSpacing: '-1.5px',
                                 display: 'flex',
                                 alignItems: 'baseline',
                             }}
@@ -126,17 +127,17 @@ const Login: React.FC = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
-                        backgroundColor: '#ffffff',
+                        backgroundColor: theme.palette.background.paper,
                     }}
                 >
-                    <Box sx={{ mb: 4, textAlign: 'center' }}>
+                    <Box sx={{ mb: 5, textAlign: 'center' }}>
                         <Typography
-                            variant="h4"
-                            gutterBottom
+                            variant="h2"
                             sx={{
                                 fontWeight: 800,
-                                color: '#1a1a1a',
-                                mb: 1
+                                color: theme.palette.text.primary,
+                                mb: 1.5,
+                                fontSize: { xs: '2rem', md: '2.5rem' }
                             }}
                         >
                             Welcome Back!!
@@ -154,37 +155,37 @@ const Login: React.FC = () => {
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Box sx={{ mb: 3 }}>
-                            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: '#4b5563' }}>
+                            <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
                                 Username <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
                             </Typography>
                             <TextField
                                 {...register('email')}
-                                placeholder="Username"
+                                placeholder="Enter your email"
                                 error={!!errors.email}
                                 helperText={errors.email?.message}
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
-                                        borderRadius: '8px',
-                                        backgroundColor: '#fff',
+                                        borderRadius: '12px',
+                                        backgroundColor: theme.palette.background.paper,
                                     }
                                 }}
                             />
                         </Box>
 
                         <Box sx={{ mb: 4 }}>
-                            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600, color: '#4b5563' }}>
+                            <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
                                 Password <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
                             </Typography>
                             <TextField
                                 {...register('password')}
                                 type="password"
-                                placeholder="Password"
+                                placeholder="Enter your password"
                                 error={!!errors.password}
                                 helperText={errors.password?.message}
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
-                                        borderRadius: '8px',
-                                        backgroundColor: '#fff',
+                                        borderRadius: '12px',
+                                        backgroundColor: theme.palette.background.paper,
                                     }
                                 }}
                             />
@@ -196,19 +197,20 @@ const Login: React.FC = () => {
                             fullWidth
                             disabled={loading}
                             sx={{
-                                py: 1.5,
+                                py: 2,
                                 fontSize: '1rem',
                                 fontWeight: 700,
-                                background: '#2ecc71 !important', // Using !important to override theme gradient
-                                '&:hover': {
-                                    background: '#27ae60 !important',
-                                },
-                                borderRadius: '8px',
+                                borderRadius: '16px',
                                 textTransform: 'none',
-                                boxShadow: '0 4px 14px 0 rgba(46, 204, 113, 0.39)',
+                                boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
+                                transition: 'all 0.3s ease',
+                                '&:hover': {
+                                    boxShadow: '0px 15px 30px rgba(41, 98, 255, 0.3)',
+                                    transform: 'translateY(-2px)'
+                                }
                             }}
                         >
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
                         </Button>
                     </form>
                 </Box>

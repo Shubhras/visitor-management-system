@@ -1,8 +1,11 @@
-// These are the message patterns used for TCP communication between services.
-// The API gateway sends these patterns and each microservice listens for them.
 export const AUTH_PATTERNS = {
   LOGIN: 'auth.login',
   VALIDATE_USER: 'auth.validate_user',
+  REGISTER: 'auth.register',
+  FORGOT_PASSWORD: 'auth.forgot_password',
+  RESET_PASSWORD: 'auth.reset_password',
+  REFRESH_TOKEN: 'auth.refresh_token',
+  LOGOUT: 'auth.logout',
 };
 
 export const USER_PATTERNS = {

@@ -8,151 +8,170 @@ import { VisitorStatus } from './enums/visitor-status.enum';
 
 @Injectable()
 export class VisitorsService {
-  constructor(
-    @InjectModel(Visitor)
-    private readonly visitorModel: typeof Visitor,
-  ) {}
+    constructor(
+        @InjectModel(Visitor)
+        private readonly visitorModel: typeof Visitor,
+    ) { }
 
-  async create(createVisitorDto: CreateVisitorDto) {
-    const visitor = await this.visitorModel.create(createVisitorDto as any);
+    async create(createVisitorDto: CreateVisitorDto) {
+        const visitor = await this.visitorModel.create(createVisitorDto as any);
 
-    return {
-      success: true,
-      data: visitor,
-    };
-  }
-
-  async findAll(filters: { role: string; userId: number; status?: string }) {
-    const where: any = {};
-
-    // Residents can only see their own visitor requests.
-    // Admins see all visitors across every resident in the system.
-    if (filters.role === 'resident') {
-      where.createdBy = filters.userId;
-    }
-
-    // Allow filtering by status so the frontend can show
-    // pending, approved, or rejected visitors separately.
-    if (filters.status) {
-      where.status = filters.status;
-    }
-
-    const visitors = await this.visitorModel.findAll({
-      where,
-      order: [['createdAt', 'DESC']],
-    });
-
-    return {
-      success: true,
-      data: visitors,
-    };
-  }
-
-  async findOne(payload: { id: number; role: string; userId: number }) {
-    const visitor = await this.visitorModel.findByPk(payload.id);
-
-    if (!visitor) {
-      return { success: false, message: 'Visitor not found' };
-    }
-
-    // A resident should not be able to view a visitor record that
-    // belongs to a different resident, even if they know the ID.
-    if (payload.role === 'resident' && visitor.createdBy !== payload.userId) {
-      return { success: false, message: 'You do not have access to this visitor record' };
-    }
-
-    return { success: true, data: visitor };
-  }
-
-  async update(payload: {
-    id: number;
-    data: UpdateVisitorDto;
-    role: string;
-    userId: number;
-  }) {
-    const visitor = await this.visitorModel.findByPk(payload.id);
-
-    if (!visitor) {
-      return { success: false, message: 'Visitor not found' };
-    }
-
-    // Residents can only update their own visitor records.
-    if (payload.role === 'resident' && visitor.createdBy !== payload.userId) {
-      return { success: false, message: 'You can only update your own visitor records' };
-    }
-
-    // Once a visitor has been approved or rejected, it should not be editable.
-    // This prevents residents from changing details after an admin has already reviewed it.
-    if (visitor.status !== VisitorStatus.PENDING) {
-      return {
-        success: false,
-        message: 'Only pending visitor records can be updated',
-      };
-    }
-
-    await visitor.update(payload.data);
-
-    return { success: true, data: visitor };
-  }
-
-  async remove(payload: { id: number; role: string; userId: number }) {
-    const visitor = await this.visitorModel.findByPk(payload.id);
-
-    if (!visitor) {
-      return { success: false, message: 'Visitor not found' };
-    }
-
-    // Residents can only delete their own pending visitors.
-    // Admins can delete any visitor record regardless of status.
-    if (payload.role === 'resident') {
-      if (visitor.createdBy !== payload.userId) {
-        return { success: false, message: 'You can only delete your own visitor records' };
-      }
-
-      if (visitor.status !== VisitorStatus.PENDING) {
         return {
-          success: false,
-          message: 'You can only delete pending visitor records',
+            success: true,
+            data: visitor,
         };
-      }
     }
 
-    await visitor.destroy();
+    async findAll(filters: {
+        role: string;
+        userId: number;
+        status?: string;
+        page?: number;
+        limit?: number;
+    }) {
+        const where: any = {};
 
-    return { success: true, message: 'Visitor record deleted successfully' };
-  }
+        if (filters.role === 'resident') {
+            where.createdBy = filters.userId;
+        }
 
-  async approve(payload: { id: number }) {
-    // Only admins can call this. Role enforcement happens at the gateway level
-    // so by the time we get here we know the caller is an admin.
-    const visitor = await this.visitorModel.findByPk(payload.id);
+        if (filters.status) {
+            where.status = filters.status;
+        }
 
-    if (!visitor) {
-      return { success: false, message: 'Visitor not found' };
+        // Set sensible defaults so callers do not have to always provide pagination params.
+        const page = filters.page && filters.page > 0 ? filters.page : 1;
+        const limit = filters.limit && filters.limit > 0 ? Math.min(filters.limit, 100) : 10;
+        const offset = (page - 1) * limit;
+
+        const { count, rows } = await this.visitorModel.findAndCountAll({
+            where,
+            order: [['createdAt', 'DESC']],
+            limit,
+            offset,
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        return {
+            success: true,
+            data: rows,
+            pagination: {
+                total: count,
+                page,
+                limit,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
+            },
+        };
     }
 
-    if (visitor.status === VisitorStatus.APPROVED) {
-      return { success: false, message: 'This visitor has already been approved' };
+    async findOne(payload: { id: number; role: string; userId: number }) {
+        const visitor = await this.visitorModel.findByPk(payload.id);
+
+        if (!visitor) {
+            return { success: false, message: 'Visitor not found' };
+        }
+
+        // A resident should not be able to view a visitor record that
+        // belongs to a different resident, even if they know the ID.
+        if (payload.role === 'resident' && visitor.createdBy !== payload.userId) {
+            return { success: false, message: 'You do not have access to this visitor record' };
+        }
+
+        return { success: true, data: visitor };
     }
 
-    await visitor.update({ status: VisitorStatus.APPROVED });
+    async update(payload: {
+        id: number;
+        data: UpdateVisitorDto;
+        role: string;
+        userId: number;
+    }) {
+        const visitor = await this.visitorModel.findByPk(payload.id);
 
-    return { success: true, data: visitor };
-  }
+        if (!visitor) {
+            return { success: false, message: 'Visitor not found' };
+        }
 
-  async reject(payload: { id: number }) {
-    const visitor = await this.visitorModel.findByPk(payload.id);
+        // Residents can only update their own visitor records.
+        if (payload.role === 'resident' && visitor.createdBy !== payload.userId) {
+            return { success: false, message: 'You can only update your own visitor records' };
+        }
 
-    if (!visitor) {
-      return { success: false, message: 'Visitor not found' };
+        // Once a visitor has been approved or rejected, it should not be editable.
+        // This prevents residents from changing details after an admin has already reviewed it.
+        if (visitor.status !== VisitorStatus.PENDING) {
+            return {
+                success: false,
+                message: 'Only pending visitor records can be updated',
+            };
+        }
+
+        await visitor.update(payload.data);
+
+        return { success: true, data: visitor };
     }
 
-    if (visitor.status === VisitorStatus.REJECTED) {
-      return { success: false, message: 'This visitor has already been rejected' };
+    async remove(payload: { id: number; role: string; userId: number }) {
+        const visitor = await this.visitorModel.findByPk(payload.id);
+
+        if (!visitor) {
+            return { success: false, message: 'Visitor not found' };
+        }
+
+        // Residents can only delete their own pending visitors.
+        // Admins can delete any visitor record regardless of status.
+        if (payload.role === 'resident') {
+            if (visitor.createdBy !== payload.userId) {
+                return { success: false, message: 'You can only delete your own visitor records' };
+            }
+
+            if (visitor.status !== VisitorStatus.PENDING) {
+                return {
+                    success: false,
+                    message: 'You can only delete pending visitor records',
+                };
+            }
+        }
+
+        await visitor.destroy();
+
+        return { success: true, message: 'Visitor record deleted successfully' };
     }
 
-    await visitor.update({ status: VisitorStatus.REJECTED });
+    async approve(payload: { id: number }) {
+        // Only admins can call this. Role enforcement happens at the gateway level
+        // so by the time we get here we know the caller is an admin.
+        const visitor = await this.visitorModel.findByPk(payload.id);
 
-    return { success: true, data: visitor };
-  }
+        if (!visitor) {
+            return { success: false, message: 'Visitor not found' };
+        }
+
+        if (visitor.status === VisitorStatus.APPROVED) {
+            return { success: false, message: 'This visitor has already been approved' };
+        }
+
+        await visitor.update({ status: VisitorStatus.APPROVED });
+
+        return { success: true, data: visitor };
+    }
+
+    async reject(payload: { id: number }) {
+        const visitor = await this.visitorModel.findByPk(payload.id);
+
+        if (!visitor) {
+            return { success: false, message: 'Visitor not found' };
+        }
+
+        if (visitor.status === VisitorStatus.REJECTED) {
+            return { success: false, message: 'This visitor has already been rejected' };
+        }
+
+        await visitor.update({ status: VisitorStatus.REJECTED });
+
+        return { success: true, data: visitor };
+    }
 }

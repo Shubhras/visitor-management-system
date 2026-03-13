@@ -3,19 +3,26 @@ import { Box, Typography } from '@mui/material';
 
 const Dashboard: React.FC = () => {
     return (
-        <Box
-            sx={{
-                height: '100%',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 'calc(100vh - 100px)', // Adjust based on header/footer height
-            }}
-        >
-            <Typography variant="h2" sx={{ color: '#ffffff', fontWeight: 'bold' }}>
-                Dashboard
-            </Typography>
+        <Box sx={{ p: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Box>
+                    <Typography variant="h4">Dashboard </Typography>
+                </Box>
+            </Box>
+            <Box
+                sx={{
+                    mt: 4,
+                    p: 6,
+                    border: '1px dashed #ddd',
+                    borderRadius: 2,
+                    textAlign: 'center',
+                    bgcolor: '#fafafa'
+                }}
+            >
+                <Typography color="text.secondary">
+                    Dashboard content will appear here.
+                </Typography>
+            </Box>
         </Box>
     );
 };

@@ -17,14 +17,11 @@ import {
 import { ListItemIcon, ListItemText } from '@mui/material';
 
 interface HeaderProps {
-    open: boolean;
-    drawerWidth: number;
     handleDrawerToggle: () => void;
     handleLogout: () => void;
-    title: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ open, drawerWidth, handleDrawerToggle, handleLogout, title }) => {
+const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,37 +36,69 @@ const Header: React.FC<HeaderProps> = ({ open, drawerWidth, handleDrawerToggle, 
         <AppBar
             position="fixed"
             sx={{
-                width: { md: open ? `calc(100% - ${drawerWidth}px)` : '100%' },
-                ml: { md: open ? `${drawerWidth}px` : 0 },
-                bgcolor: 'rgba(255, 255, 255, 0.8)',
-                backdropFilter: 'blur(8px)',
+                width: '100%',
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+                bgcolor: 'background.paper',
                 color: 'text.primary',
-                boxShadow: 'none',
+                boxShadow: '0px 2px 4px rgba(0,0,0,0.02)',
                 borderBottom: '1px solid',
                 borderColor: 'divider',
-                transition: (theme) => theme.transitions.create(['width', 'margin'], {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.leavingScreen,
-                }),
             }}
         >
-            <Toolbar>
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerToggle}
-                    edge="start"
-                    sx={{ mr: 2 }}
-                >
-                    <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 700 }}>
-                    {title}
-                </Typography>
+            <Toolbar sx={{ justifyContent: 'space-between', px: { xs: 1, md: 3 } }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton onClick={handleMenu} sx={{ p: 0, ml: 2 }}>
-                        <Avatar sx={{ bgcolor: 'primary.main', width: 35, height: 35 }}>A</Avatar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerToggle}
+                        edge="start"
+                        sx={{ mr: 2, color: '#333' }}
+                    >
+                        <MenuIcon />
                     </IconButton>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 900,
+                                color: 'primary.main',
+                                letterSpacing: '-0.5px',
+                                display: 'flex',
+                                alignItems: 'baseline',
+                            }}
+                        >
+                            Genio
+                            <Box component="span" sx={{ color: 'secondary.main', fontSize: '1.1em' }}>
+                                360
+                            </Box>
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleMenu}>
+                    <Avatar
+                        sx={{
+                            width: 40,
+                            height: 40,
+                            bgcolor: '#f5f5f5',
+                            color: '#333',
+                            border: '1px solid #ddd'
+                        }}
+                    >
+                        <PersonIcon />
+                    </Avatar>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            ml: 1.5,
+                            fontWeight: 600,
+                            color: 'text.primary',
+                            display: { xs: 'none', sm: 'block' }
+                        }}
+                    >
+                        admin
+                    </Typography>
+
                     <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}

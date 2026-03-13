@@ -31,16 +31,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
     ];
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', px: [1], py: 2 }}>
-                <Typography variant="h6" color="primary" sx={{ fontWeight: 800, letterSpacing: 1 }}>
-                    VMS ADMIN
-                </Typography>
-            </Toolbar>
-            <Divider />
-            <List sx={{ px: 2, py: 2 }}>
+        <Box
+            sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                bgcolor: 'primary.light', // Using theme's light blue
+                pt: 8
+            }}
+        >
+            <List sx={{ px: 0, py: 0 }}>
                 {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
+                    <ListItem key={item.text} disablePadding>
                         <ListItemButton
                             onClick={() => {
                                 navigate(item.path);
@@ -48,30 +50,46 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
                             }}
                             selected={location.pathname === item.path}
                             sx={{
-                                borderRadius: 2,
+                                py: 1.5,
+                                px: 3,
                                 '&.Mui-selected': {
-                                    background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                                    color: 'white',
-                                    '& .MuiListItemIcon-root': { color: 'white' },
+                                    bgcolor: 'secondary.light', // Theme purple selection
+                                    color: 'text.primary',
                                     '&:hover': {
-                                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                                        opacity: 0.9,
+                                        bgcolor: 'secondary.light',
+                                        opacity: 0.9
                                     },
+                                    '& .MuiListItemIcon-root': { color: 'text.primary' },
                                 },
+                                '&:hover': {
+                                    bgcolor: 'rgba(124, 77, 255, 0.08)',
+                                }
                             }}
                         >
-                            <ListItemIcon sx={{ minWidth: 40, color: location.pathname === item.path ? 'white' : 'inherit' }}>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.text} primaryTypographyProps={{ fontWeight: 500 }} />
+                            <ListItemText
+                                primary={item.text}
+                                primaryTypographyProps={{
+                                    fontSize: '0.875rem',
+                                    fontWeight: location.pathname === item.path ? 600 : 500,
+                                    color: location.pathname === item.path ? '#000' : '#555'
+                                }}
+                            />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
             <Box sx={{ mt: 'auto', p: 2 }}>
-                <Divider sx={{ mb: 2 }} />
-                <ListItemButton onClick={handleLogout} sx={{ borderRadius: 2, color: 'error.main' }}>
-                    <ListItemIcon sx={{ minWidth: 40, color: 'error.main' }}><LogoutIcon /></ListItemIcon>
+                <ListItemButton
+                    onClick={handleLogout}
+                    sx={{
+                        borderRadius: 2,
+                        color: 'error.main',
+                        '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.04)' }
+                    }}
+                >
+                    <ListItemIcon sx={{ minWidth: 40, color: 'error.main' }}>
+                        <LogoutIcon />
+                    </ListItemIcon>
                     <ListItemText primary="Logout" />
                 </ListItemButton>
             </Box>

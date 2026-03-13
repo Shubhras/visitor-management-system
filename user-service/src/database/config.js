@@ -1,5 +1,5 @@
-// Sequelize CLI uses this file to know which database to connect to
-// when running migrations from the command line.
+// Sequelize CLI reads this file when running migrations from the terminal.
+// It must be a plain JS file because the CLI runs before TypeScript compiles.
 require('dotenv').config();
 
 module.exports = {

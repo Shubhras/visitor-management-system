@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import {
     Dashboard as DashboardIcon,
-    Logout as LogoutIcon,
     People as VisitorsIcon,
 } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,10 +16,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 interface SidebarProps {
     isMobile: boolean;
     onClose: () => void;
-    handleLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -83,21 +81,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
                     </ListItem>
                 ))}
             </List>
-            <Box sx={{ mt: 'auto', p: 2 }}>
-                <ListItemButton
-                    onClick={handleLogout}
-                    sx={{
-                        borderRadius: 2,
-                        color: 'error.main',
-                        '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.04)' }
-                    }}
-                >
-                    <ListItemIcon sx={{ minWidth: 40 }}>
-                        <LogoutIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Logout" />
-                </ListItemButton>
-            </Box>
         </Box>
     );
 };

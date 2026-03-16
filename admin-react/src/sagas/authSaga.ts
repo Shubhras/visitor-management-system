@@ -6,6 +6,8 @@ import {
     loginRequest,
     loginSuccess,
     loginFailure,
+    logoutRequest,
+    logoutSuccess,
 } from '../features/auth/authSlice';
 import type { LoginResponse, LoginPayload } from '../features/auth/authTypes';
 
@@ -19,8 +21,14 @@ interface AxiosErrorResponse {
 
 function* loginSaga(action: PayloadAction<LoginPayload>) {
     try {
-        const response: AxiosResponse<LoginResponse> = yield call(axiosInstance.post, '/api/v1/master/login/', action.payload);
-        yield put(loginSuccess(response.data));
+        const response: AxiosResponse<LoginResponse> = yield call(axiosInstance.post, '/auth/login', action.payload);
+        const data = response.data;
+
+        if (data.success) {
+            yield put(loginSuccess(data));
+        } else {
+            yield put(loginFailure(data.message));
+        }
     } catch (error: unknown) {
         let errorMessage = 'Login failed. Please check your credentials.';
         if (error && typeof error === 'object' && 'response' in error) {
@@ -33,6 +41,16 @@ function* loginSaga(action: PayloadAction<LoginPayload>) {
     }
 }
 
+function* logoutSaga() {
+    try {
+        yield call(axiosInstance.post, '/auth/logout');
+    } catch {
+        // Even if API call fails, still logout locally
+    }
+    yield put(logoutSuccess());
+}
+
 export default function* authSaga() {
     yield takeLatest(loginRequest.type, loginSaga);
+    yield takeLatest(logoutRequest.type, logoutSaga);
 }

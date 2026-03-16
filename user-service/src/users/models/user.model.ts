@@ -5,22 +5,19 @@ import {
   DataType,
   CreatedAt,
   UpdatedAt,
-  BeforeCreate,
-  BeforeUpdate,
 } from 'sequelize-typescript';
-import * as bcrypt from 'bcryptjs';
 import { Role } from '../../roles/role.enum';
 
 @Table({
   tableName: 'users',
   timestamps: true,
 })
-export class User extends Model<User> {
-
+export class User extends Model {
   @Column({
     type: DataType.INTEGER,
-    autoIncrement: true,
     primaryKey: true,
+    autoIncrement: false,
+    allowNull: false,
   })
   declare id: number;
 
@@ -28,54 +25,46 @@ export class User extends Model<User> {
     type: DataType.STRING(100),
     allowNull: false,
   })
-  declare name: string;
+  name: string;
 
   @Column({
     type: DataType.STRING(150),
     allowNull: false,
     unique: true,
   })
-  declare email: string;
-
-  @Column({
-    type: DataType.STRING(255),
-    allowNull: false,
-  })
-  declare password: string;
+  email: string;
 
   @Column({
     type: DataType.ENUM(...Object.values(Role)),
     allowNull: false,
     defaultValue: Role.RESIDENT,
   })
-  declare role: Role;
+  role: Role;
+
+  @Column({
+    type: DataType.STRING(20),
+    allowNull: true,
+    defaultValue: null,
+  })
+  phone: string | null;
+
+  @Column({
+    type: DataType.STRING(100),
+    allowNull: true,
+    defaultValue: null,
+  })
+  unitNumber: string | null;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
     defaultValue: true,
   })
-  declare isActive: boolean;
+  isActive: boolean;
 
   @CreatedAt
   declare createdAt: Date;
 
   @UpdatedAt
   declare updatedAt: Date;
-
-  // Hash the password before creating a new user record.
-  @BeforeCreate
-  static async hashPasswordOnCreate(instance: User) {
-    if (instance.password) {
-      instance.password = await bcrypt.hash(instance.password, 10);
-    }
-  }
-
-  // Hash password if updated
-  @BeforeUpdate
-  static async hashPasswordOnUpdate(instance: User) {
-    if (instance.changed('password')) {
-      instance.password = await bcrypt.hash(instance.password, 10);
-    }
-  }
 }

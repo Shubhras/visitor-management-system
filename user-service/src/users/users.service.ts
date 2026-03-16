@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -11,32 +10,34 @@ export class UsersService {
     private readonly userModel: typeof User,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    // Check if a user with this email already exists before trying to insert.
-    // This gives a clean error message instead of a raw database constraint error.
-    const existingUser = await this.userModel.findOne({
-      where: { email: createUserDto.email },
-    });
+  async syncFromAuth(data: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  }) {
 
-    if (existingUser) {
-      return {
-        success: false,
-        message: 'A user with this email address already exists',
-      };
+    const existing = await this.userModel.findByPk(data.id);
+    if (existing) {
+      return { success: true, message: 'User profile already exists' };
     }
 
-    const user = await this.userModel.create(createUserDto as any);
+    const user = await this.userModel.create({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      isActive: true,
+    } as any);
 
     return {
       success: true,
-      data: this.sanitize(user),
+      data: user,
     };
   }
 
   async findAll() {
     const users = await this.userModel.findAll({
-      // Never return passwords in list responses even though they are hashed.
-      attributes: { exclude: ['password'] },
       order: [['createdAt', 'DESC']],
     });
 
@@ -47,9 +48,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.userModel.findByPk(id, {
-      attributes: { exclude: ['password'] },
-    });
+    const user = await this.userModel.findByPk(id);
 
     if (!user) {
       return { success: false, message: 'User not found' };
@@ -59,8 +58,6 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    // This method is called by the auth service indirectly through the gateway
-    // when it needs to cross-reference a user during token validation.
     const user = await this.userModel.findOne({ where: { email } });
 
     if (!user) {
@@ -79,10 +76,7 @@ export class UsersService {
 
     await user.update(updateUserDto);
 
-    return {
-      success: true,
-      data: this.sanitize(user),
-    };
+    return { success: true, data: user };
   }
 
   async remove(id: number) {
@@ -97,10 +91,19 @@ export class UsersService {
     return { success: true, message: 'User deleted successfully' };
   }
 
-  // Strip the password field before returning a user object to the caller.
-  // We do this in a helper so we never forget to do it in any method.
-  private sanitize(user: User) {
-    const { password, ...safeUser } = user.toJSON();
-    return safeUser;
+  async toggleActive(id: number) {
+    const user = await this.userModel.findByPk(id);
+
+    if (!user) {
+      return { success: false, message: 'User not found' };
+    }
+
+    await user.update({ isActive: !user.isActive });
+
+    return {
+      success: true,
+      message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully`,
+      data: user,
+    };
   }
 }

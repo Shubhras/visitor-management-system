@@ -10,9 +10,6 @@ export class UsersService {
     private readonly userClient: ClientProxy,
   ) {}
 
-  create(data: any) {
-    return firstValueFrom(this.userClient.send(USER_PATTERNS.CREATE, data));
-  }
 
   findAll() {
     return firstValueFrom(this.userClient.send(USER_PATTERNS.FIND_ALL, {}));
@@ -28,5 +25,9 @@ export class UsersService {
 
   remove(id: number) {
     return firstValueFrom(this.userClient.send(USER_PATTERNS.DELETE, { id }));
+  }
+
+  toggleActive(id: number) {
+    return firstValueFrom(this.userClient.send(USER_PATTERNS.TOGGLE_ACTIVE, { id }));
   }
 }

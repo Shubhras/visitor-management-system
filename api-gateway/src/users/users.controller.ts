@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Post,
+  Patch,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -15,13 +15,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { JwtGuard } from '../common/guards/jwt.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 
-// User management endpoints are restricted to admins only.
-// Residents do not need to manage other users.
+// User creation is done via POST /auth/register.
+// These endpoints are for admin management of existing user profiles only.
 @ApiTags('Users')
 @ApiBearerAuth()
 @UseGuards(JwtGuard, RolesGuard)
@@ -29,12 +28,6 @@ import { Roles } from '../common/decorators/roles.decorator';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Create a new user (admin only)' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Get all users (admin only)' })
@@ -49,7 +42,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update a user (admin only)' })
+  @ApiOperation({ summary: 'Update user profile fields like name, phone, unitNumber (admin only)' })
   update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
     return this.usersService.update(id, body);
   }
@@ -58,5 +51,11 @@ export class UsersController {
   @ApiOperation({ summary: 'Delete a user (admin only)' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
+  }
+
+  @Patch(':id/toggle-active')
+  @ApiOperation({ summary: 'Enable or disable a user account (admin only)' })
+  toggleActive(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.toggleActive(id);
   }
 }

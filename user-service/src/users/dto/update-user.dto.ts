@@ -1,28 +1,18 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import { Role } from '../../roles/role.enum';
 
-// All fields are optional on update so callers can patch
-// just the fields they need to change.
 export class UpdateUserDto {
   @IsString()
   @IsOptional()
   name?: string;
 
-  @IsEmail()
+  @IsString()
   @IsOptional()
-  email?: string;
+  phone?: string;
 
   @IsString()
-  @MinLength(6)
   @IsOptional()
-  password?: string;
+  unitNumber?: string;
 
   @IsEnum(Role)
   @IsOptional()

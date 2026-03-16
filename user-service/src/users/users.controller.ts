@@ -1,19 +1,18 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { USER_PATTERNS } from '../shared/constants/tcp-patterns';
 
-// All methods here respond to TCP messages from the API gateway.
-// No HTTP exposure — all routing goes through the gateway.
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @MessagePattern(USER_PATTERNS.CREATE)
-  create(@Payload() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @MessagePattern(USER_PATTERNS.SYNC_FROM_AUTH)
+  syncFromAuth(
+    @Payload() data: { id: number; name: string; email: string; role: string },
+  ) {
+    return this.usersService.syncFromAuth(data);
   }
 
   @MessagePattern(USER_PATTERNS.FIND_ALL)
@@ -39,5 +38,10 @@ export class UsersController {
   @MessagePattern(USER_PATTERNS.DELETE)
   remove(@Payload() payload: { id: number }) {
     return this.usersService.remove(payload.id);
+  }
+
+  @MessagePattern(USER_PATTERNS.TOGGLE_ACTIVE)
+  toggleActive(@Payload() payload: { id: number }) {
+    return this.usersService.toggleActive(payload.id);
   }
 }

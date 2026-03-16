@@ -9,7 +9,7 @@ const initialState: VisitorsState = {
     success: false,
     error: null,
     params: {
-        page: 1,
+        page: 0,
         limit: 10,
         search: '',
         status: '',
@@ -93,9 +93,9 @@ const visitorsSlice = createSlice({
         },
         setQueryParams: (state, action: PayloadAction<Partial<VisitorQueryParams>>) => {
             state.params = { ...state.params, ...action.payload };
-            // Reset to page 1 when filters change (unless page itself is being set)
+            // Reset to page 0 when filters change (unless page itself is being set)
             if (action.payload.search !== undefined || action.payload.status !== undefined) {
-                state.params.page = 1;
+                state.params.page = 0;
             }
         },
         clearVisitorSuccess: (state) => {

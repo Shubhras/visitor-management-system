@@ -118,12 +118,6 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                         }
                     }}
                 >
-                    <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            <PersonIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>Profile</ListItemText>
-                    </MenuItem>
                     <MenuItem onClick={() => { handleClose(); handleLogout(); }}>
                         <ListItemIcon>
                             <LogoutIcon fontSize="small" />

@@ -5,15 +5,15 @@ import {
     TextField,
     Button,
     CircularProgress,
-    Alert,
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
     IconButton,
     useTheme,
+    InputAdornment
 } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, Person, Phone, Home, Event } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTime } from 'luxon';
 import toast from 'react-hot-toast';
@@ -27,7 +27,10 @@ import type { Visitor } from '../../features/visitor/visitorTypes';
 
 const visitorSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
-    phone: z.string().min(10, 'Phone must be at least 10 digits'),
+    phone: z.string()
+        .min(10, 'Phone must be at least 10 digits')
+        .max(10, 'Phone must be exactly 10 digits')
+        .regex(/^\d+$/, 'Phone must contain only numbers'),
     unitNumber: z.string().min(1, 'Unit number is required'),
     visitDate: z.string().min(1, 'Visit date is required'),
 });
@@ -94,6 +97,13 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
         }
     }, [success, onClose, isEditMode, dispatch]);
 
+    // Show error toast
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+        }
+    }, [error]);
+
     const onSubmit = (data: VisitorFormValues) => {
         if (isEditMode && visitor) {
             dispatch(updateVisitorRequest({ id: visitor.id, ...data }));
@@ -108,8 +118,10 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
             onClose={onClose}
             maxWidth="sm"
             fullWidth
-            PaperProps={{
-                sx: { borderRadius: '12px', p: 1 }
+            slotProps={{
+                paper: {
+                    sx: { borderRadius: '24px', p: 1 }
+                }
             }}
         >
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1, pt: 3, px: 3 }}>
@@ -123,67 +135,140 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
 
             <DialogContent>
                 <Box sx={{ mt: 1 }}>
-                    {error && (
-                        <Alert severity="error" sx={{ mb: 3, borderRadius: '8px' }}>
-                            {error}
-                        </Alert>
-                    )}
+
 
                     <form id="visitor-form" onSubmit={handleSubmit(onSubmit)}>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 2.5 }}>
-                            <TextField
-                                {...register('name')}
-                                label="Visitor Name"
-                                placeholder="Enter full name"
-                                fullWidth
-
-                                error={!!errors.name}
-                                helperText={errors.name?.message}
-                                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
-                            />
-                            <TextField
-                                {...register('phone')}
-                                label="Phone Number"
-                                placeholder="10-digit number"
-                                fullWidth
-
-                                error={!!errors.phone}
-                                helperText={errors.phone?.message}
-                                sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
-                            />
-                            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 3 }}>
+                            <Box>
+                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
+                                    Visitor Name <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                </Typography>
                                 <TextField
-                                    {...register('unitNumber')}
-                                    label="Unit Number"
-                                    placeholder="e.g. 101"
+                                    {...register('name')}
+                                    placeholder="Enter full name"
                                     fullWidth
+                                    error={!!errors.name}
+                                    helperText={errors.name?.message}
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Person sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '12px',
+                                            backgroundColor: theme.palette.background.paper,
+                                        }
+                                    }}
+                                />
+                            </Box>
 
-                                    error={!!errors.unitNumber}
-                                    helperText={errors.unitNumber?.message}
-                                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
+                            <Box>
+                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
+                                    Phone Number <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                </Typography>
+                                <TextField
+                                    {...register('phone')}
+                                    placeholder="10-digit number"
+                                    fullWidth
+                                    error={!!errors.phone}
+                                    helperText={errors.phone?.message}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replaceAll(/\D/g, '');
+                                        e.target.value = value.slice(0, 10);
+                                        register('phone').onChange(e);
+                                    }}
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Phone sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '12px',
+                                            backgroundColor: theme.palette.background.paper,
+                                        }
+                                    }}
                                 />
-                                <Controller
-                                    name="visitDate"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <DatePicker
-                                            label="Visit Date"
-                                            minDate={DateTime.now()}
-                                            value={field.value ? DateTime.fromISO(field.value) : null}
-                                            onChange={(newValue: DateTime | null) => {
-                                                field.onChange(newValue ? newValue.toISODate() : '');
-                                            }}
-                                            slotProps={{
-                                                textField: {
-                                                    fullWidth: true,
-                                                    error: !!errors.visitDate,
-                                                    helperText: errors.visitDate?.message,
-                                                    sx: { '& .MuiOutlinedInput-root': { borderRadius: '12px' } }
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                />
+                            </Box>
+
+                            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                                <Box>
+                                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
+                                        Unit Number <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                    </Typography>
+                                    <TextField
+                                        {...register('unitNumber')}
+                                        placeholder="e.g. 101"
+                                        fullWidth
+                                        error={!!errors.unitNumber}
+                                        helperText={errors.unitNumber?.message}
+                                        slotProps={{
+                                            input: {
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <Home sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                    </InputAdornment>
+                                                ),
+                                            },
+                                        }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: '12px',
+                                                backgroundColor: theme.palette.background.paper,
+                                            }
+                                        }}
+                                    />
+                                </Box>
+                                <Box>
+                                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
+                                        Visit Date <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                    </Typography>
+                                    <Controller
+                                        name="visitDate"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                minDate={DateTime.now()}
+                                                value={field.value ? DateTime.fromISO(field.value) : null}
+                                                onChange={(newValue: DateTime | null) => {
+                                                    field.onChange(newValue ? newValue.toISODate() : '');
+                                                }}
+                                                slotProps={{
+                                                    textField: {
+                                                        fullWidth: true,
+                                                        error: !!errors.visitDate,
+                                                        helperText: errors.visitDate?.message,
+                                                        placeholder: "Select Date",
+                                                        slotProps: {
+                                                            input: {
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start" sx={{ mr: 1 }}>
+                                                                        <Event sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                                    </InputAdornment>
+                                                                ),
+                                                            },
+                                                        },
+                                                        sx: {
+                                                            '& .MuiOutlinedInput-root': {
+                                                                borderRadius: '12px',
+                                                                backgroundColor: theme.palette.background.paper,
+                                                            }
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Box>
                             </Box>
                         </Box>
                     </form>
@@ -213,11 +298,17 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                     disabled={loading}
                     sx={{
                         px: 6,
-                        textTransform: 'none',
-                        borderRadius: '12px',
+                        borderRadius: '16px',
                         fontWeight: 700,
                         minWidth: 120,
-                        height: 44,
+                        height: 48,
+                        textTransform: 'none',
+                        boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                            boxShadow: '0px 15px 30px rgba(41, 98, 255, 0.3)',
+                            transform: 'translateY(-2px)'
+                        }
                     }}
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : (isEditMode ? 'Update' : 'Submit')}

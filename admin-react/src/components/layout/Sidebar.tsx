@@ -10,6 +10,7 @@ import {
 import {
     Dashboard as DashboardIcon,
     Logout as LogoutIcon,
+    People as VisitorsIcon,
 } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
 
     const menuItems = [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+        { text: 'Visitors', icon: <VisitorsIcon />, path: '/visitors' },
     ];
 
     return (
@@ -63,6 +65,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose, handleLogout }) =>
                                 }
                             }}
                         >
+                            <ListItemIcon sx={{
+                                minWidth: 40,
+                                color: location.pathname === item.path ? 'text.primary' : '#555'
+                            }}>
+                                {item.icon}
+                            </ListItemIcon>
                             <ListItemText
                                 primary={item.text}
                                 primaryTypographyProps={{

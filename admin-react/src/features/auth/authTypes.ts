@@ -1,10 +1,7 @@
 export interface User {
     id: number;
-    name: string;
     email: string;
-    role: string | null;
-    user_type: string;
-    is_master: boolean;
+    role: string;
 }
 
 export interface LoginPayload {
@@ -12,18 +9,19 @@ export interface LoginPayload {
     password: string;
 }
 
-export interface LoginData {
-    access: string;
-    refresh: string;
+export interface LoginSuccessResponse {
+    success: true;
+    accessToken: string;
+    refreshToken: string;
     user: User;
 }
 
-export interface LoginResponse {
-    status: boolean;
-    statusCode: number;
+export interface LoginFailureResponse {
+    success: false;
     message: string;
-    data: LoginData;
 }
+
+export type LoginResponse = LoginSuccessResponse | LoginFailureResponse;
 
 export interface AuthState {
     user: User | null;

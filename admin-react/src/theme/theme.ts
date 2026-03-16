@@ -3,26 +3,26 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#2962ff',
-            light: '#dbeafe',
-            dark: '#1e40af',
+            main: '#6366f1', // Indigo Purple (Modern & Professional)
+            light: '#f8fafc', // Very light slate for backgrounds
+            dark: '#4f46e5',
             contrastText: '#fff',
         },
         secondary: {
-            main: '#7c4dff',
-            light: '#e1bee7', // From image
+            main: '#7c4dff', // Logo Purple
+            light: '#f5f3ff', // Very light purple for active states
             dark: '#6200ea',
             contrastText: '#fff',
         },
         background: {
-            default: '#f4f7fe',
+            default: '#f8fafc', // Light slate background
             paper: '#ffffff',
         },
         text: {
-            primary: '#1b2559',
-            secondary: '#a3aed0',
+            primary: '#0f172a', // Slate 900
+            secondary: '#64748b', // Slate 500
         },
-        divider: '#e0e5f2',
+        divider: '#f1f5f9',
     },
     typography: {
         fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif', // More modern font

@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                             }}
                         >
                             Genio
-                            <Box component="span" sx={{ color: 'secondary.main', fontSize: '1.1em' }}>
+                            <Box component="span" sx={{ color: '#f59e0b', ml: 0.5, fontSize: '1.1em' }}>
                                 360
                             </Box>
                         </Typography>
@@ -109,12 +109,14 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                     onClose={handleClose}
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                    PaperProps={{
-                        sx: {
-                            mt: 1.5,
-                            minWidth: 180,
-                            boxShadow: '0px 5px 15px rgba(0,0,0,0.1)',
-                            borderRadius: 1
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                mt: 1.5,
+                                minWidth: 180,
+                                boxShadow: '0px 5px 15px rgba(0,0,0,0.1)',
+                                borderRadius: 1
+                            }
                         }
                     }}
                 >

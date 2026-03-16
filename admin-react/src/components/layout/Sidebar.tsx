@@ -33,57 +33,65 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose }) => {
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                bgcolor: 'primary.light',
-                pt: 8
+                bgcolor: 'background.paper',
+                borderRight: '1px solid',
+                borderColor: 'divider',
+                pt: 10
             }}
         >
-            <List sx={{ px: 0, py: 0 }}>
-                {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                navigate(item.path);
-                                if (isMobile) onClose();
-                            }}
-                            selected={location.pathname === item.path}
-                            sx={{
-                                py: 1.5,
-                                px: 3,
-                                '&.Mui-selected': {
-                                    bgcolor: 'secondary.light',
-                                    color: 'text.primary',
-                                    '&:hover': {
+            <List sx={{ px: 2, py: 0 }}>
+                {menuItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
+                            <ListItemButton
+                                onClick={() => {
+                                    navigate(item.path);
+                                    if (isMobile) onClose();
+                                }}
+                                selected={isActive}
+                                sx={{
+                                    borderRadius: '12px',
+                                    py: 1.2,
+                                    px: 2,
+                                    '&.Mui-selected': {
                                         bgcolor: 'secondary.light',
-                                        opacity: 0.9
+                                        color: 'secondary.main',
+                                        '&:hover': {
+                                            bgcolor: 'secondary.light',
+                                        },
+                                        '& .MuiListItemIcon-root': { color: 'secondary.main' },
                                     },
-                                    '& .MuiListItemIcon-root': { color: 'text.primary' },
-                                },
-                                '&:hover': {
-                                    bgcolor: 'rgba(124, 77, 255, 0.08)',
-                                }
-                            }}
-                        >
-                            <ListItemIcon sx={{
-                                minWidth: 40,
-                                color: location.pathname === item.path ? 'text.primary' : '#555'
-                            }}>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={item.text}
-                                slotProps={{
-                                    primary: {
-                                        sx: {
-                                            fontSize: '0.875rem',
-                                            fontWeight: location.pathname === item.path ? 600 : 500,
-                                            color: location.pathname === item.path ? '#000' : '#555'
-                                        }
+                                    '&:hover': {
+                                        bgcolor: 'rgba(99, 102, 241, 0.04)',
                                     }
                                 }}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                            >
+                                <ListItemIcon sx={{
+                                    minWidth: 35,
+                                    color: isActive ? 'secondary.main' : 'text.secondary',
+                                    transition: 'color 0.2s',
+                                    '& .MuiSvgIcon-root': { fontSize: '1.4rem' }
+                                }}>
+                                    {item.icon}
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={item.text}
+                                    slotProps={{
+                                        primary: {
+                                            sx: {
+                                                fontSize: '0.9rem',
+                                                fontWeight: isActive ? 700 : 500,
+                                                color: isActive ? 'secondary.main' : 'text.secondary',
+                                                transition: 'all 0.2s'
+                                            }
+                                        }
+                                    }}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    );
+                })}
             </List>
         </Box>
     );

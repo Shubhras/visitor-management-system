@@ -66,7 +66,7 @@ const VisitorList: React.FC = () => {
 
     // Delete Confirmation state
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [visitorToDelete, setVisitorToDelete] = useState<string | null>(null);
+    const [visitorToDelete, setVisitorToDelete] = useState<number | null>(null);
 
     // Action tracking logic
     const isDeleting = useRef(false);
@@ -136,12 +136,12 @@ const VisitorList: React.FC = () => {
         }));
     };
 
-    const handleStatusUpdate = (id: string, status: Visitor['status']) => {
+    const handleStatusUpdate = (id: number, status: Visitor['status']) => {
         isUpdatingStatus.current = true;
         dispatch(updateVisitorStatusRequest({ id, status }));
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = (id: number) => {
         setVisitorToDelete(id);
         setDeleteDialogOpen(true);
     };
@@ -156,8 +156,8 @@ const VisitorList: React.FC = () => {
 
     const getStatusColor = (status: Visitor['status']) => {
         switch (status) {
-            case 'Approved': return 'success';
-            case 'Rejected': return 'error';
+            case 'APPROVED': return 'success';
+            case 'REJECTED': return 'error';
             default: return 'warning';
         }
     };
@@ -197,7 +197,7 @@ const VisitorList: React.FC = () => {
             )
         },
         { id: 'phone', label: 'Phone', minWidth: 120 },
-        { id: 'unit', label: 'Unit', minWidth: 100 },
+        { id: 'unitNumber', label: 'Unit', minWidth: 100 },
         {
             id: 'visitDate',
             label: 'Visit Date',
@@ -237,10 +237,10 @@ const VisitorList: React.FC = () => {
                             <IconButton
                                 color="success"
                                 size="small"
-                                onClick={() => handleStatusUpdate(visitor.id, 'Approved')}
-                                disabled={visitor.status === 'Approved'}
+                                onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
+                                disabled={visitor.status === 'APPROVED'}
                                 sx={{
-                                    bgcolor: visitor.status === 'Approved' ? 'transparent' : 'rgba(74, 222, 128, 0.1)',
+                                    bgcolor: visitor.status === 'APPROVED' ? 'transparent' : 'rgba(74, 222, 128, 0.1)',
                                     '&:hover': { bgcolor: 'rgba(74, 222, 128, 0.2)' }
                                 }}
                             >
@@ -253,10 +253,10 @@ const VisitorList: React.FC = () => {
                             <IconButton
                                 color="error"
                                 size="small"
-                                onClick={() => handleStatusUpdate(visitor.id, 'Rejected')}
-                                disabled={visitor.status === 'Rejected'}
+                                onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
+                                disabled={visitor.status === 'REJECTED'}
                                 sx={{
-                                    bgcolor: visitor.status === 'Rejected' ? 'transparent' : 'rgba(248, 113, 113, 0.1)',
+                                    bgcolor: visitor.status === 'REJECTED' ? 'transparent' : 'rgba(248, 113, 113, 0.1)',
                                     '&:hover': { bgcolor: 'rgba(248, 113, 113, 0.2)' }
                                 }}
                             >
@@ -321,9 +321,9 @@ const VisitorList: React.FC = () => {
                     slotProps={{ select: { displayEmpty: true } }}
                 >
                     <MenuItem value="">Status</MenuItem>
-                    <MenuItem value="Pending">Pending</MenuItem>
-                    <MenuItem value="Approved">Approved</MenuItem>
-                    <MenuItem value="Rejected">Rejected</MenuItem>
+                    <MenuItem value="PENDING">Pending</MenuItem>
+                    <MenuItem value="APPROVED">Approved</MenuItem>
+                    <MenuItem value="REJECTED">Rejected</MenuItem>
                 </TextField>
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
                 <Stack direction="row" spacing={2} sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'flex-end' }}>

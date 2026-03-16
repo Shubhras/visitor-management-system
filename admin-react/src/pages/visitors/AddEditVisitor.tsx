@@ -27,8 +27,8 @@ import type { Visitor } from '../../features/visitor/visitorTypes';
 
 const visitorSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
-    phone: z.string().regex(/^\d{10}$/, 'Phone must be a valid 10-digit number'),
-    unit: z.string().min(1, 'Unit number is required'),
+    phone: z.string().min(10, 'Phone must be at least 10 digits'),
+    unitNumber: z.string().min(1, 'Unit number is required'),
     visitDate: z.string().min(1, 'Visit date is required'),
 });
 
@@ -58,7 +58,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
         defaultValues: {
             name: '',
             phone: '',
-            unit: '',
+            unitNumber: '',
             visitDate: '',
         },
     });
@@ -71,14 +71,14 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                 reset({
                     name: visitor.name,
                     phone: visitor.phone,
-                    unit: visitor.unit,
+                    unitNumber: visitor.unitNumber,
                     visitDate: visitor.visitDate,
                 });
             } else {
                 reset({
                     name: '',
                     phone: '',
-                    unit: '',
+                    unitNumber: '',
                     visitDate: '',
                 });
             }
@@ -153,13 +153,13 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                             />
                             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
                                 <TextField
-                                    {...register('unit')}
+                                    {...register('unitNumber')}
                                     label="Unit Number"
                                     placeholder="e.g. 101"
                                     fullWidth
 
-                                    error={!!errors.unit}
-                                    helperText={errors.unit?.message}
+                                    error={!!errors.unitNumber}
+                                    helperText={errors.unitNumber?.message}
                                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: '12px' } }}
                                 />
                                 <Controller

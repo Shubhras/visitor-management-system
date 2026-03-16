@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Visitor, VisitorsState, AddVisitorPayload, UpdateVisitorPayload, VisitorQueryParams } from './visitorTypes';
+import type { Visitor, VisitorsState, AddVisitorPayload, UpdateVisitorPayload, VisitorQueryParams, FetchVisitorsResponse } from './visitorTypes';
 
 const initialState: VisitorsState = {
     list: [],
@@ -9,7 +9,7 @@ const initialState: VisitorsState = {
     success: false,
     error: null,
     params: {
-        page: 0,
+        page: 1,
         limit: 10,
         search: '',
         status: '',
@@ -22,15 +22,16 @@ const visitorsSlice = createSlice({
     name: 'visitors',
     initialState,
     reducers: {
-        fetchVisitorsRequest: (state, _action: PayloadAction<VisitorQueryParams>) => {
+        fetchVisitorsRequest: (state, action: PayloadAction<VisitorQueryParams>) => {
+            state.params = action.payload;
             state.loading = true;
             state.error = null;
             state.success = false;
         },
-        fetchVisitorsSuccess: (state, action: PayloadAction<{ list: Visitor[]; total: number }>) => {
+        fetchVisitorsSuccess: (state, action: PayloadAction<FetchVisitorsResponse>) => {
             state.loading = false;
-            state.list = action.payload.list;
-            state.total = action.payload.total;
+            state.list = action.payload.data;
+            state.total = action.payload.pagination.total;
         },
         fetchVisitorsFailure: (state, action: PayloadAction<string>) => {
             state.loading = false;
@@ -64,10 +65,10 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        updateVisitorStatusRequest: (state, _action: PayloadAction<{ id: string; status: Visitor['status'] }>) => {
+        updateVisitorStatusRequest: (state, _action: PayloadAction<{ id: number; status: Visitor['status'] }>) => {
             state.loading = true;
         },
-        updateVisitorStatusSuccess: (state, action: PayloadAction<{ id: string; status: Visitor['status'] }>) => {
+        updateVisitorStatusSuccess: (state, action: PayloadAction<{ id: number; status: Visitor['status'] }>) => {
             state.loading = false;
             const index = state.list.findIndex((v) => v.id === action.payload.id);
             if (index !== -1) {
@@ -78,10 +79,10 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        deleteVisitorRequest: (state, _action: PayloadAction<string>) => {
+        deleteVisitorRequest: (state, _action: PayloadAction<number>) => {
             state.loading = true;
         },
-        deleteVisitorSuccess: (state, action: PayloadAction<string>) => {
+        deleteVisitorSuccess: (state, action: PayloadAction<number>) => {
             state.loading = false;
             state.list = state.list.filter((v) => v.id !== action.payload);
             state.total -= 1;
@@ -92,6 +93,10 @@ const visitorsSlice = createSlice({
         },
         setQueryParams: (state, action: PayloadAction<Partial<VisitorQueryParams>>) => {
             state.params = { ...state.params, ...action.payload };
+            // Reset to page 1 when filters change (unless page itself is being set)
+            if (action.payload.search !== undefined || action.payload.status !== undefined) {
+                state.params.page = 1;
+            }
         },
         clearVisitorSuccess: (state) => {
             state.success = false;

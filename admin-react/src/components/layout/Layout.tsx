@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import {
     Box,
     Drawer,
@@ -17,7 +17,7 @@ const Layout: React.FC = () => {
     const [open, setOpen] = useState(true);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const navigate = useNavigate();
+
     const dispatch = useDispatch();
 
     const handleDrawerToggle = () => {
@@ -26,7 +26,6 @@ const Layout: React.FC = () => {
 
     const handleLogout = () => {
         dispatch(logoutRequest());
-        navigate('/login');
     };
 
     return (

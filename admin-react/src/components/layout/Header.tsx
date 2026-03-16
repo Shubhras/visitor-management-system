@@ -8,13 +8,15 @@ import {
     Avatar,
     Menu,
     MenuItem,
+    ListItemIcon,
+    ListItemText
 } from '@mui/material';
 import {
     Menu as MenuIcon,
     Person as PersonIcon,
     Logout as LogoutIcon,
 } from '@mui/icons-material';
-import { ListItemIcon, ListItemText } from '@mui/material';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 interface HeaderProps {
     handleDrawerToggle: () => void;
@@ -23,6 +25,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const { user } = useAppSelector((state) => state.auth);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -96,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                             display: { xs: 'none', sm: 'block' }
                         }}
                     >
-                        admin
+                        {user?.email || 'Admin'}
                     </Typography>
                 </Box>
 

@@ -71,10 +71,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose }) => {
                             </ListItemIcon>
                             <ListItemText
                                 primary={item.text}
-                                primaryTypographyProps={{
-                                    fontSize: '0.875rem',
-                                    fontWeight: location.pathname === item.path ? 600 : 500,
-                                    color: location.pathname === item.path ? '#000' : '#555'
+                                slotProps={{
+                                    primary: {
+                                        sx: {
+                                            fontSize: '0.875rem',
+                                            fontWeight: location.pathname === item.path ? 600 : 500,
+                                            color: location.pathname === item.path ? '#000' : '#555'
+                                        }
+                                    }
                                 }}
                             />
                         </ListItemButton>

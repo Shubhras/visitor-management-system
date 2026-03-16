@@ -13,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc(this.apiService) : super(AuthInitial()) {
     on<LoginRequested>(_onLogin);
+    on<LogoutRequested>(_onLogout);
   }
 
   Future<void> _onLogin(LoginRequested event, Emitter<AuthState> emit) async {
@@ -45,4 +46,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onLogout(LogoutRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+
+    try {
+      final response = await apiService.post(AppConstants.logoutEndpoint, {});
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data["success"] == true) {
+          await TokenStorage.clearToken();
+
+          emit(AuthLoggedOut());
+        } else {
+          emit(AuthFailure("Logout failed"));
+        }
+      } else {
+        emit(AuthFailure("Logout API error"));
+      }
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
 }

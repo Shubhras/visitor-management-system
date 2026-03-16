@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:visitor_management/core/navigation/app_startup.dart';
 import 'package:visitor_management/core/services/api_service.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:visitor_management/features/auth/presentation/screens/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
 
-        home: const LoginScreen(),
+        home: const AppStartup(),
       ),
     );
   }

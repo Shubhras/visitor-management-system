@@ -53,7 +53,6 @@ const Layout: React.FC = () => {
                 <Sidebar
                     isMobile={isMobile}
                     onClose={handleDrawerToggle}
-                    handleLogout={handleLogout}
                 />
             </Drawer>
             <Box

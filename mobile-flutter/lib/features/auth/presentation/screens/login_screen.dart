@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:visitor_management/core/constants/app_colors.dart';
 import 'package:visitor_management/core/constants/dimensions.dart';
+import 'package:visitor_management/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:visitor_management/features/auth/presentation/bloc/auth_event.dart';
+import 'package:visitor_management/features/auth/presentation/bloc/auth_state.dart';
 import 'package:visitor_management/shared/widgets/custom_button.dart';
 import 'package:visitor_management/shared/widgets/custom_text_field.dart';
 
@@ -65,145 +69,183 @@ class _LoginScreenState extends State<LoginScreen> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
 
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Dimensions.paddingSizeLarge,
-                ),
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthSuccess) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Login Successfully!!!!')));
+            }
 
-                child: Column(
-                  children: [
-                    /// APP LOGO
-                    SizedBox(
-                      height: 150,
-                      child: Image.asset(
-                        "assets/images/genio360_logo.png",
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
-                      ),
-                    ),
-                    // const SizedBox(height: Dimensions.paddingSizeLarge),
+            if (state is AuthFailure) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+            }
+          },
 
-                    /// TITLE
-                    Text(
-                      "Let's Sign In",
-                      style: TextStyle(
-                        fontSize: Dimensions.fontSizeOverLarge(context),
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Dimensions.paddingSizeLarge,
+                  ),
 
-                    const SizedBox(height: 6),
-
-                    Text(
-                      "Visitor management system access",
-                      style: TextStyle(
-                        fontSize: Dimensions.fontSizeSmall(context),
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-
-                    const SizedBox(height: Dimensions.paddingSizeExtremeLarge),
-
-                    /// LOGIN CARD
-                    Container(
-                      padding: const EdgeInsets.all(
-                        Dimensions.paddingSizeLarge,
-                      ),
-
-                      decoration: BoxDecoration(
-                        color: AppColors.card,
-                        borderRadius: BorderRadius.circular(
-                          Dimensions.radiusLarge,
+                  child: Column(
+                    children: [
+                      /// APP LOGO
+                      SizedBox(
+                        height: 150,
+                        child: Image.asset(
+                          "assets/images/genio360_logo.png",
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.high,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
 
-                      child: Form(
-                        key: _formKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                      /// TITLE
+                      Text(
+                        "Let's Sign In",
+                        style: TextStyle(
+                          fontSize: Dimensions.fontSizeOverLarge(context),
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
 
-                        child: Column(
-                          children: [
-                            /// EMAIL
-                            CustomTextField(
-                              controller: emailController,
-                              label: "Email Address",
-                              prefixIcon: Icons.email_outlined,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: validateEmail,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.deny(RegExp(r"\s")),
-                              ],
-                              onChanged: (_) => checkForm(),
-                            ),
+                      const SizedBox(height: 6),
 
-                            const SizedBox(
-                              height: Dimensions.paddingSizeDefault,
-                            ),
+                      Text(
+                        "Visitor management system access",
+                        style: TextStyle(
+                          fontSize: Dimensions.fontSizeSmall(context),
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
 
-                            /// PASSWORD
-                            CustomTextField(
-                              controller: passwordController,
-                              label: "Password",
-                              prefixIcon: Icons.lock_outline,
-                              obscureText: obscurePassword,
-                              validator: validatePassword,
-                              onChanged: (_) => checkForm(),
+                      const SizedBox(
+                        height: Dimensions.paddingSizeExtremeLarge,
+                      ),
 
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscurePassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
+                      /// LOGIN CARD
+                      Container(
+                        padding: const EdgeInsets.all(
+                          Dimensions.paddingSizeLarge,
+                        ),
 
-                                onPressed: () {
-                                  setState(() {
-                                    obscurePassword = !obscurePassword;
-                                  });
-                                },
-                              ),
-                            ),
-
-                            const SizedBox(height: Dimensions.paddingSizeLarge),
-
-                            /// LOGIN BUTTON
-                            CustomButton(
-                              text: "Sign In",
-                              onPressed: isFormValid
-                                  ? () {
-                                      FocusScope.of(context).unfocus();
-
-                                      print("Successfully login!!!!");
-                                    }
-                                  : null,
+                        decoration: BoxDecoration(
+                          color: AppColors.card,
+                          borderRadius: BorderRadius.circular(
+                            Dimensions.radiusLarge,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
                             ),
                           ],
                         ),
-                      ),
-                    ),
 
-                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                        child: Form(
+                          key: _formKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
 
-                    /// FOOTER TEXT
-                    Text(
-                      "Genio360 Visitor Management",
-                      style: TextStyle(
-                        fontSize: Dimensions.fontSizeExtraSmall(context),
-                        color: AppColors.textSecondary,
+                          child: Column(
+                            children: [
+                              /// EMAIL
+                              CustomTextField(
+                                controller: emailController,
+                                label: "Email Address",
+                                prefixIcon: Icons.email_outlined,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: validateEmail,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.deny(
+                                    RegExp(r"\s"),
+                                  ),
+                                ],
+                                onChanged: (_) => checkForm(),
+                              ),
+
+                              const SizedBox(
+                                height: Dimensions.paddingSizeDefault,
+                              ),
+
+                              /// PASSWORD
+                              CustomTextField(
+                                controller: passwordController,
+                                label: "Password",
+                                prefixIcon: Icons.lock_outline,
+                                obscureText: obscurePassword,
+                                validator: validatePassword,
+                                onChanged: (_) => checkForm(),
+
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+
+                                  onPressed: () {
+                                    setState(() {
+                                      obscurePassword = !obscurePassword;
+                                    });
+                                  },
+                                ),
+                              ),
+
+                              const SizedBox(
+                                height: Dimensions.paddingSizeLarge,
+                              ),
+
+                              /// LOGIN BUTTON
+                              BlocBuilder<AuthBloc, AuthState>(
+                                builder: (context, state) {
+                                  final isLoading = state is AuthLoading;
+
+                                  return CustomButton(
+                                    text: "Sign In",
+                                    isLoading: isLoading,
+
+                                    onPressed: isFormValid
+                                        ? () {
+                                            FocusScope.of(context).unfocus();
+
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              context.read<AuthBloc>().add(
+                                                LoginRequested(
+                                                  email: emailController.text,
+                                                  password:
+                                                      passwordController.text,
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        : null,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+
+                      const SizedBox(height: Dimensions.paddingSizeLarge),
+
+                      /// FOOTER TEXT
+                      Text(
+                        "Genio360 Visitor Management",
+                        style: TextStyle(
+                          fontSize: Dimensions.fontSizeExtraSmall(context),
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

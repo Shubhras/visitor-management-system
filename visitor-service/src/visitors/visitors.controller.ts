@@ -23,6 +23,11 @@ export class VisitorsController {
             role: string;
             userId: number;
             status?: string;
+            search?: string;
+            unitNumber?: string;
+            visitDateFrom?: string;
+            visitDateTo?: string;
+            createdBy?: number;
             page?: number;
             limit?: number;
         },

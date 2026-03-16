@@ -47,21 +47,32 @@ export class VisitorsController {
     }
 
     @Get()
-    @ApiOperation({ summary: 'Get visitors with pagination (admin sees all, resident sees own)' })
+    @ApiOperation({ summary: 'Get paginated visitor list with search and filters' })
+    @ApiQuery({ name: 'search', required: false, description: 'Search by visitor name, phone, or unit number' })
     @ApiQuery({ name: 'status', required: false, enum: ['PENDING', 'APPROVED', 'REJECTED'] })
+    @ApiQuery({ name: 'visitDateFrom', required: false, description: 'Filter from date (YYYY-MM-DD)' })
+    @ApiQuery({ name: 'visitDateTo', required: false, description: 'Filter to date (YYYY-MM-DD)' })
+    @ApiQuery({ name: 'createdBy', required: false, description: 'Filter by resident user ID (admin only)' })
     @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
     @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
     findAll(
         @CurrentUser() user: any,
+        @Query('search') search?: string,
         @Query('status') status?: string,
+        @Query('visitDateFrom') visitDateFrom?: string,
+        @Query('visitDateTo') visitDateTo?: string,
+        @Query('createdBy') createdBy?: string,
         @Query('page') page?: string,
         @Query('limit') limit?: string,
     ) {
         return this.visitorsService.findAll({
             role: user.role,
             userId: user.id,
+            search,
             status,
-            // Convert query string values to numbers since query params always come in as strings
+            visitDateFrom,
+            visitDateTo,
+            createdBy: user.role === 'admin' && createdBy ? parseInt(createdBy) : undefined,
             page: page ? parseInt(page) : 1,
             limit: limit ? parseInt(limit) : 10,
         });

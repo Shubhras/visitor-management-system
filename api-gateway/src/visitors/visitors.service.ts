@@ -19,7 +19,11 @@ export class VisitorsService {
     findAll(filters: {
         role: string;
         userId: number;
+        search?: string;
         status?: string;
+        visitDateFrom?: string;
+        visitDateTo?: string;
+        createdBy?: number;
         page?: number;
         limit?: number;
     }) {

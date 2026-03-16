@@ -16,8 +16,16 @@ export class UsersController {
   }
 
   @MessagePattern(USER_PATTERNS.FIND_ALL)
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @Payload() filters: {
+      search?: string;
+      role?: string;
+      isActive?: boolean;
+      page?: number;
+      limit?: number;
+    },
+  ) {
+    return this.usersService.findAll(filters);
   }
 
   @MessagePattern(USER_PATTERNS.FIND_ONE)

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -36,14 +37,55 @@ export class UsersService {
     };
   }
 
-  async findAll() {
-    const users = await this.userModel.findAll({
+  async findAll(filters: {
+    search?: string;
+    role?: string;
+    isActive?: boolean;
+    page?: number;
+    limit?: number;
+  }) {
+    const where: any = {};
+    if (filters.role) {
+      where.role = filters.role;
+    }
+
+    if (filters.isActive !== undefined && filters.isActive !== null) {
+      where.isActive = filters.isActive;
+    }
+
+    if (filters.search) {
+      const searchTerm = `%${filters.search}%`;
+      where[Op.or] = [
+        { name: { [Op.like]: searchTerm } },
+        { email: { [Op.like]: searchTerm } },
+        { phone: { [Op.like]: searchTerm } },
+      ];
+    }
+
+    const page = filters.page && filters.page > 0 ? filters.page : 1;
+    const limit = filters.limit && filters.limit > 0 ? Math.min(filters.limit, 100) : 10;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await this.userModel.findAndCountAll({
+      where,
       order: [['createdAt', 'DESC']],
+      limit,
+      offset,
     });
+
+    const totalPages = Math.ceil(count / limit);
 
     return {
       success: true,
-      data: users,
+      data: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
     };
   }
 

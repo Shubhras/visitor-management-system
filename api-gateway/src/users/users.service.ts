@@ -11,8 +11,16 @@ export class UsersService {
   ) {}
 
 
-  findAll() {
-    return firstValueFrom(this.userClient.send(USER_PATTERNS.FIND_ALL, {}));
+  findAll(filters: {
+    search?: string;
+    role?: string;
+    isActive?: boolean;
+    page?: number;
+    limit?: number;
+  }) {
+    return firstValueFrom(
+      this.userClient.send(USER_PATTERNS.FIND_ALL, filters),
+    );
   }
 
   findOne(id: number) {

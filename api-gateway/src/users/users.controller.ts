@@ -7,11 +7,13 @@ import {
   ParseIntPipe,
   Patch,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
@@ -30,9 +32,26 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all users (admin only)' })
-  findAll() {
-    return this.usersService.findAll();
+  @ApiOperation({ summary: 'Get paginated user list with search and filters (admin only)' })
+  @ApiQuery({ name: 'search', required: false, description: 'Search by name, email, or phone' })
+  @ApiQuery({ name: 'role', required: false, enum: ['admin', 'resident'] })
+  @ApiQuery({ name: 'isActive', required: false, type: Boolean })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  findAll(
+    @Query('search') search?: string,
+    @Query('role') role?: string,
+    @Query('isActive') isActive?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.usersService.findAll({
+      search,
+      role,
+      isActive: isActive !== undefined ? isActive === 'true' : undefined,
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 10,
+    });
   }
 
   @Get(':id')

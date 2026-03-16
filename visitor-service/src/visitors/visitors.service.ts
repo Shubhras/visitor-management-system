@@ -26,6 +26,11 @@ export class VisitorsService {
         role: string;
         userId: number;
         status?: string;
+        search?: string;
+        unitNumber?: string;
+        visitDateFrom?: string;
+        visitDateTo?: string;
+        createdBy?: number;
         page?: number;
         limit?: number;
     }) {
@@ -33,13 +38,33 @@ export class VisitorsService {
 
         if (filters.role === 'resident') {
             where.createdBy = filters.userId;
+        } else if (filters.createdBy) {
+            where.createdBy = filters.createdBy;
         }
 
         if (filters.status) {
             where.status = filters.status;
         }
 
-        // Set sensible defaults so callers do not have to always provide pagination params.
+        if (filters.visitDateFrom || filters.visitDateTo) {
+            where.visitDate = {};
+            if (filters.visitDateFrom) {
+                where.visitDate[Op.gte] = filters.visitDateFrom;
+            }
+            if (filters.visitDateTo) {
+                where.visitDate[Op.lte] = filters.visitDateTo;
+            }
+        }
+
+        if (filters.search) {
+            const searchTerm = `%${filters.search}%`;
+            where[Op.or] = [
+                { name: { [Op.like]: searchTerm } },
+                { phone: { [Op.like]: searchTerm } },
+                { unitNumber: { [Op.like]: searchTerm } },
+            ];
+        }
+
         const page = filters.page && filters.page > 0 ? filters.page : 1;
         const limit = filters.limit && filters.limit > 0 ? Math.min(filters.limit, 100) : 10;
         const offset = (page - 1) * limit;
@@ -66,7 +91,6 @@ export class VisitorsService {
             },
         };
     }
-
     async findOne(payload: { id: number; role: string; userId: number }) {
         const visitor = await this.visitorModel.findByPk(payload.id);
 

@@ -44,7 +44,7 @@ import Loader from '../../components/common/Loader';
 import ResetButtonTableFilter from '../../components/common/ResetButtonTableFilter';
 import SearchTableFilter from '../../components/common/SearchTableFilter';
 import { StyledTableContainer, StyledHeaderCell, StyledTableRow, ActionStack } from '../../components/common/TableStyles';
-
+import ConfirmationPopup from '../../components/common/dialogs/ConfirmationPopup';
 interface Column {
     id: string;
     label: string;
@@ -434,8 +434,14 @@ const VisitorList: React.FC = () => {
                 />
             </StyledTableContainer>
 
-            {/* Add/Edit Popup */}
-
+            {/* Confirmation Popup */}
+            <ConfirmationPopup
+                open={deleteDialogOpen}
+                setOpen={setDeleteDialogOpen}
+                title="Delete Visitor"
+                subTitle="Are you sure you want to delete this visitor? This action cannot be undone."
+                onConfirm={confirmDelete}
+            />
         </Box>
     );
 };

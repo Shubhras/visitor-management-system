@@ -44,6 +44,7 @@ import Loader from '../../components/common/Loader';
 import ResetButtonTableFilter from '../../components/common/ResetButtonTableFilter';
 import SearchTableFilter from '../../components/common/SearchTableFilter';
 import { StyledTableContainer, StyledHeaderCell, StyledTableRow, ActionStack } from '../../components/common/TableStyles';
+import AddEditVisitor from './AddEditVisitor';
 import ConfirmationPopup from '../../components/common/dialogs/ConfirmationPopup';
 interface Column {
     id: string;
@@ -433,6 +434,12 @@ const VisitorList: React.FC = () => {
                     sx={{ borderTop: `1px solid ${theme.palette.divider}` }}
                 />
             </StyledTableContainer>
+            {/* Add/Edit Popup */}
+            <AddEditVisitor
+                open={modalVisitorOpen}
+                onClose={handleCloseVisitorModal}
+                visitor={selectedVisitor}
+            />
 
             {/* Confirmation Popup */}
             <ConfirmationPopup

@@ -4,6 +4,7 @@ import Dashboard from '../pages/dashboard/Dashboard';
 import MainLayout from '../components/layout/Layout';
 import ProtectedRoute from './ProtectedRoute';
 import ErrorPage from '../pages/error/ErrorPage';
+import VisitorList from '../pages/visitors/VisitorList';
 
 export const router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
             {
                 path: 'dashboard',
                 element: <Dashboard />,
+            },
+            {
+                path: 'visitors',
+                element: <VisitorList />,
             },
         ],
     },

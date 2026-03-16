@@ -340,7 +340,6 @@ const VisitorList: React.FC = () => {
                             height: 44,
                             fontWeight: 700,
                             flexGrow: { xs: 1, md: 0 },
-                            boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
                         }}
                     >
                         Add Visitor

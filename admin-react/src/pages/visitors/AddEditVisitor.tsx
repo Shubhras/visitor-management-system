@@ -190,11 +190,19 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                 </Box>
             </DialogContent>
 
-            <DialogActions sx={{ px: 3, pb: 4, pt: 2 }}>
+            <DialogActions sx={{ px: 3, pb: 4, pt: 2, justifyContent: 'space-between' }}>
                 <Button
+                    variant="outlined"
+                    color="inherit"
                     onClick={onClose}
                     disabled={loading}
-                    sx={{ textTransform: 'none', color: theme.palette.text.secondary, fontWeight: 700 }}
+                    sx={{
+                        textTransform: 'none',
+                        borderRadius: '8px',
+                        borderColor: '#cbd5e1',
+                        color: '#64748b',
+                        fontWeight: 600,
+                    }}
                 >
                     Cancel
                 </Button>
@@ -210,7 +218,6 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                         fontWeight: 700,
                         minWidth: 120,
                         height: 44,
-                        boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
                     }}
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : (isEditMode ? 'Update' : 'Submit')}

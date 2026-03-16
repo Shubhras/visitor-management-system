@@ -13,41 +13,37 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { loginRequest } from '../../features/auth/authSlice';
+import { Link as RouterLink } from 'react-router-dom';
+import { forgotPasswordRequest, clearAuthStatus } from '../../features/auth/authSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import loginBg from '../../assets/login-bg.png';
 
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
     email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
-const Login: React.FC = () => {
+const ForgotPassword: React.FC = () => {
     const theme = useTheme();
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-    const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+    const { loading, error, forgotPasswordSuccess } = useAppSelector((state) => state.auth);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/dashboard');
-        }
-    }, [isAuthenticated, navigate]);
+        dispatch(clearAuthStatus());
+    }, [dispatch]);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginFormValues>({
-        resolver: zodResolver(loginSchema),
+    } = useForm<ForgotPasswordFormValues>({
+        resolver: zodResolver(forgotPasswordSchema),
     });
 
-    const onSubmit = (data: LoginFormValues) => {
-        dispatch(loginRequest(data));
+    const onSubmit = (data: ForgotPasswordFormValues) => {
+        dispatch(forgotPasswordRequest(data));
     };
 
     return (
@@ -140,10 +136,10 @@ const Login: React.FC = () => {
                                 fontSize: { xs: '2rem', md: '2.5rem' }
                             }}
                         >
-                            Welcome Back!!
+                            Forgot Password?
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.8 }}>
-                            To keep connected with us please login with your personal info
+                            Enter your email and we'll send you a link to reset your password.
                         </Typography>
                     </Box>
 
@@ -153,86 +149,76 @@ const Login: React.FC = () => {
                         </Alert>
                     )}
 
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Box sx={{ mb: 3 }}>
-                            <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
-                                Username <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
-                            </Typography>
-                            <TextField
-                                {...register('email')}
-                                placeholder="Enter your email"
-                                error={!!errors.email}
-                                helperText={errors.email?.message}
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: '12px',
-                                        backgroundColor: theme.palette.background.paper,
-                                    }
-                                }}
-                            />
-                        </Box>
+                    {forgotPasswordSuccess && (
+                        <Alert severity="success" sx={{ mb: 3 }}>
+                            Password reset link has been sent to your email.
+                        </Alert>
+                    )}
 
-                        <Box sx={{ mb: 4 }}>
-                            <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
-                                Password <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
-                            </Typography>
-                            <TextField
-                                {...register('password')}
-                                type="password"
-                                placeholder="Enter your password"
-                                error={!!errors.password}
-                                helperText={errors.password?.message}
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: '12px',
-                                        backgroundColor: theme.palette.background.paper,
-                                    }
-                                }}
-                            />
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                                <Link
-                                    component={RouterLink}
-                                    to="/forgot-password"
+                    {!forgotPasswordSuccess && (
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
+                                    Email Address <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                </Typography>
+                                <TextField
+                                    {...register('email')}
+                                    placeholder="Enter your registered email"
+                                    fullWidth
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
                                     sx={{
-                                        color: theme.palette.primary.main,
-                                        fontWeight: 700,
-                                        textDecoration: 'none',
-                                        fontSize: '0.875rem',
-                                        '&:hover': { textDecoration: 'underline' }
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '12px',
+                                            backgroundColor: theme.palette.background.paper,
+                                        }
                                     }}
-                                >
-                                    Forgot Password?
-                                </Link>
+                                />
                             </Box>
-                        </Box>
 
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            disabled={loading}
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                disabled={loading}
+                                sx={{
+                                    py: 2,
+                                    fontSize: '1rem',
+                                    fontWeight: 700,
+                                    borderRadius: '16px',
+                                    textTransform: 'none',
+                                    boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
+                                    transition: 'all 0.3s ease',
+                                    mb: 3,
+                                    '&:hover': {
+                                        boxShadow: '0px 15px 30px rgba(41, 98, 255, 0.3)',
+                                        transform: 'translateY(-2px)'
+                                    }
+                                }}
+                            >
+                                {loading ? <CircularProgress size={24} color="inherit" /> : 'Send Reset Link'}
+                            </Button>
+                        </form>
+                    )}
+
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Link
+                            component={RouterLink}
+                            to="/login"
                             sx={{
-                                py: 2,
-                                fontSize: '1rem',
+                                color: theme.palette.primary.main,
                                 fontWeight: 700,
-                                borderRadius: '16px',
-                                textTransform: 'none',
-                                boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    boxShadow: '0px 15px 30px rgba(41, 98, 255, 0.3)',
-                                    transform: 'translateY(-2px)'
-                                }
+                                textDecoration: 'none',
+                                '&:hover': { textDecoration: 'underline' }
                             }}
                         >
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
-                        </Button>
-                    </form>
+                            Back to Login
+                        </Link>
+                    </Box>
                 </Box>
             </Paper>
         </Box>
     );
 };
 
-export default Login;
-
+export default ForgotPassword;

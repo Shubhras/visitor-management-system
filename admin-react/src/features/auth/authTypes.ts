@@ -36,4 +36,20 @@ export interface AuthState {
     isAuthenticated: boolean;
     loading: boolean;
     error: string | null;
+    forgotPasswordSuccess: boolean;
+    resetPasswordSuccess: boolean;
+}
+
+export interface ForgotPasswordPayload {
+    email: string;
+}
+
+export interface ResetPasswordPayload {
+    token: string;
+    newPassword: string;
+}
+
+export interface AuthApiResponse {
+    success: boolean;
+    message: string;
 }

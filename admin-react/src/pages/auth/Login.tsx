@@ -1,22 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Box,
     Typography,
     TextField,
     Button,
     Paper,
-    Alert,
     CircularProgress,
     useTheme,
+    Link,
+    IconButton,
+    InputAdornment,
 } from '@mui/material';
+import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { loginRequest } from '../../features/auth/authSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import loginBg from '../../assets/login-bg.png';
+import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address'),
@@ -30,12 +34,25 @@ const Login: React.FC = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     useEffect(() => {
         if (isAuthenticated) {
             navigate('/dashboard');
         }
     }, [isAuthenticated, navigate]);
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+        }
+    }, [error]);
 
     const {
         register,
@@ -146,11 +163,7 @@ const Login: React.FC = () => {
                         </Typography>
                     </Box>
 
-                    {error && (
-                        <Alert severity="error" sx={{ mb: 3 }}>
-                            {error}
-                        </Alert>
-                    )}
+
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Box sx={{ mb: 3 }}>
@@ -159,9 +172,19 @@ const Login: React.FC = () => {
                             </Typography>
                             <TextField
                                 {...register('email')}
+                                fullWidth
                                 placeholder="Enter your email"
                                 error={!!errors.email}
                                 helperText={errors.email?.message}
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Email sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                            </InputAdornment>
+                                        ),
+                                    },
+                                }}
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '12px',
@@ -177,10 +200,32 @@ const Login: React.FC = () => {
                             </Typography>
                             <TextField
                                 {...register('password')}
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
+                                fullWidth
                                 placeholder="Enter your password"
                                 error={!!errors.password}
                                 helperText={errors.password?.message}
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <Lock sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    },
+                                }}
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '12px',
@@ -188,6 +233,21 @@ const Login: React.FC = () => {
                                     }
                                 }}
                             />
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                                <Link
+                                    component={RouterLink}
+                                    to="/forgot-password"
+                                    sx={{
+                                        color: theme.palette.primary.main,
+                                        fontWeight: 700,
+                                        textDecoration: 'none',
+                                        fontSize: '0.875rem',
+                                        '&:hover': { textDecoration: 'underline' }
+                                    }}
+                                >
+                                    Forgot Password?
+                                </Link>
+                            </Box>
                         </Box>
 
                         <Button

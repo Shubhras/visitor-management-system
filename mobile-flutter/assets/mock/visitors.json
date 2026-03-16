@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "name": "Rahul Sharma",
+    "phone": "9876543210",
+    "unitNumber": "A-101",
+    "visitDate": "2026-03-20",
+    "status": "PENDING"
+  },
+  {
+    "id": 2,
+    "name": "Amit Kumar",
+    "phone": "9123456780",
+    "unitNumber": "B-203",
+    "visitDate": "2026-03-21",
+    "status": "APPROVED"
+  },
+  {
+    "id": 3,
+    "name": "Sneha Verma",
+    "phone": "9988776655",
+    "unitNumber": "C-102",
+    "visitDate": "2026-03-22",
+    "status": "REJECTED"
+  },
+  {
+    "id": 4,
+    "name": "Vikas Singh",
+    "phone": "9090909090",
+    "unitNumber": "A-203",
+    "visitDate": "2026-03-23",
+    "status": "PENDING"
+  },
+  {
+    "id": 5,
+    "name": "Priya Patel",
+    "phone": "9887766554",
+    "unitNumber": "B-104",
+    "visitDate": "2026-03-24",
+    "status": "APPROVED"
+  },
+  {
+    "id": 6,
+    "name": "Rohit Mehta",
+    "phone": "9876501234",
+    "unitNumber": "D-301",
+    "visitDate": "2026-03-25",
+    "status": "PENDING"
+  },
+  {
+    "id": 7,
+    "name": "Neha Gupta",
+    "phone": "9123409876",
+    "unitNumber": "C-210",
+    "visitDate": "2026-03-26",
+    "status": "APPROVED"
+  },
+  {
+    "id": 8,
+    "name": "Arjun Kapoor",
+    "phone": "9988112233",
+    "unitNumber": "A-305",
+    "visitDate": "2026-03-27",
+    "status": "REJECTED"
+  },
+  {
+    "id": 9,
+    "name": "Karan Malhotra",
+    "phone": "9776655443",
+    "unitNumber": "B-110",
+    "visitDate": "2026-03-28",
+    "status": "PENDING"
+  },
+  {
+    "id": 10,
+    "name": "Pooja Shah",
+    "phone": "9654321876",
+    "unitNumber": "C-111",
+    "visitDate": "2026-03-29",
+    "status": "APPROVED"
+  },
+  {
+    "id": 11,
+    "name": "Deepak Yadav",
+    "phone": "9786543210",
+    "unitNumber": "D-101",
+    "visitDate": "2026-03-30",
+    "status": "PENDING"
+  },
+  {
+    "id": 12,
+    "name": "Anita Desai",
+    "phone": "9871234567",
+    "unitNumber": "A-402",
+    "visitDate": "2026-03-31",
+    "status": "APPROVED"
+  },
+  {
+    "id": 13,
+    "name": "Sanjay Kumar",
+    "phone": "9765432109",
+    "unitNumber": "B-501",
+    "visitDate": "2026-04-01",
+    "status": "PENDING"
+  },
+  {
+    "id": 14,
+    "name": "Meera Nair",
+    "phone": "9870098765",
+    "unitNumber": "C-302",
+    "visitDate": "2026-04-02",
+    "status": "REJECTED"
+  },
+  {
+    "id": 15,
+    "name": "Nikhil Jain",
+    "phone": "9345678123",
+    "unitNumber": "A-120",
+    "visitDate": "2026-04-03",
+    "status": "APPROVED"
+  },
+  {
+    "id": 16,
+    "name": "Ritu Singh",
+    "phone": "9873456120",
+    "unitNumber": "D-205",
+    "visitDate": "2026-04-04",
+    "status": "PENDING"
+  },
+  {
+    "id": 17,
+    "name": "Manoj Sharma",
+    "phone": "9898989898",
+    "unitNumber": "B-222",
+    "visitDate": "2026-04-05",
+    "status": "APPROVED"
+  },
+  {
+    "id": 18,
+    "name": "Shreya Bose",
+    "phone": "9823456712",
+    "unitNumber": "C-410",
+    "visitDate": "2026-04-06",
+    "status": "PENDING"
+  },
+  {
+    "id": 19,
+    "name": "Ajay Verma",
+    "phone": "9812345678",
+    "unitNumber": "A-210",
+    "visitDate": "2026-04-07",
+    "status": "REJECTED"
+  },
+  {
+    "id": 20,
+    "name": "Tanvi Joshi",
+    "phone": "9876540987",
+    "unitNumber": "D-402",
+    "visitDate": "2026-04-08",
+    "status": "APPROVED"
+  }
+]

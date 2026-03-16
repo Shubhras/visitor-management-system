@@ -23,6 +23,12 @@ export interface LoginFailureResponse {
 
 export type LoginResponse = LoginSuccessResponse | LoginFailureResponse;
 
+export interface RefreshTokenResponse {
+    success: boolean;
+    accessToken: string;
+    refreshToken: string;
+}
+
 export interface AuthState {
     user: User | null;
     token: string | null;

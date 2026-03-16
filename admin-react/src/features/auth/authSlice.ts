@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { AuthState, LoginSuccessResponse, LoginPayload, User } from './authTypes';
+import type { AuthState, LoginSuccessResponse, LoginPayload, RefreshTokenResponse, User } from './authTypes';
 
 const getStoredUser = (): User | null => {
     try {
@@ -47,14 +47,25 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        logout: (state) => {
+        logoutRequest: (state) => {
+            state.loading = true;
+        },
+        logoutSuccess: (state) => {
             state.user = null;
             state.token = null;
             state.refreshToken = null;
             state.isAuthenticated = false;
+            state.loading = false;
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');
+        },
+        tokenRefreshed: (state, action: PayloadAction<RefreshTokenResponse>) => {
+            const { accessToken, refreshToken } = action.payload;
+            state.token = accessToken;
+            state.refreshToken = refreshToken;
+            localStorage.setItem('token', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
         },
         clearError: (state) => {
             state.error = null;
@@ -62,5 +73,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, logout, clearError } = authSlice.actions;
+export const { loginRequest, loginSuccess, loginFailure, logoutRequest, logoutSuccess, tokenRefreshed, clearError } = authSlice.actions;
 export default authSlice.reducer;

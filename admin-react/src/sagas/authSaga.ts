@@ -6,6 +6,8 @@ import {
     loginRequest,
     loginSuccess,
     loginFailure,
+    logoutRequest,
+    logoutSuccess,
 } from '../features/auth/authSlice';
 import type { LoginResponse, LoginPayload } from '../features/auth/authTypes';
 
@@ -39,6 +41,16 @@ function* loginSaga(action: PayloadAction<LoginPayload>) {
     }
 }
 
+function* logoutSaga() {
+    try {
+        yield call(axiosInstance.post, '/auth/logout');
+    } catch {
+        // Even if API call fails, still logout locally
+    }
+    yield put(logoutSuccess());
+}
+
 export default function* authSaga() {
     yield takeLatest(loginRequest.type, loginSaga);
+    yield takeLatest(logoutRequest.type, logoutSaga);
 }

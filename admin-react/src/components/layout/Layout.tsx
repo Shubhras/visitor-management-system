@@ -7,7 +7,7 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../features/auth/authSlice';
+import { logoutRequest } from '../../features/auth/authSlice';
 import Header from './Header';
 import Sidebar from './Sidebar';
 
@@ -25,7 +25,7 @@ const Layout: React.FC = () => {
     };
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logoutRequest());
         navigate('/login');
     };
 
@@ -60,7 +60,7 @@ const Layout: React.FC = () => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 0, 
+                    p: 0,
                     width: { md: open ? `calc(100% - ${drawerWidth}px)` : '100%' },
                     transition: theme.transitions.create(['margin', 'width'], {
                         easing: theme.transitions.easing.sharp,

@@ -68,6 +68,10 @@ const VisitorList: React.FC = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [visitorToDelete, setVisitorToDelete] = useState<number | null>(null);
 
+    // Status Confirmation state
+    const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+    const [statusPayload, setStatusPayload] = useState<{ id: number; status: Visitor['status'] } | null>(null);
+
     // Action tracking logic
     const isDeleting = useRef(false);
     const isUpdatingStatus = useRef(false);
@@ -137,8 +141,16 @@ const VisitorList: React.FC = () => {
     };
 
     const handleStatusUpdate = (id: number, status: Visitor['status']) => {
-        isUpdatingStatus.current = true;
-        dispatch(updateVisitorStatusRequest({ id, status }));
+        setStatusPayload({ id, status });
+        setStatusDialogOpen(true);
+    };
+
+    const confirmStatusUpdate = () => {
+        if (statusPayload) {
+            isUpdatingStatus.current = true;
+            dispatch(updateVisitorStatusRequest(statusPayload));
+            setStatusPayload(null);
+        }
     };
 
     const handleDelete = (id: number) => {
@@ -347,11 +359,11 @@ const VisitorList: React.FC = () => {
                 </Stack>
             </Stack>
 
-            {error && (
+            {/* {error && (
                 <Typography color="error" sx={{ mb: 2 }}>
                     {error}
                 </Typography>
-            )}
+            )} */}
 
             {/* Config-driven Table Section */}
             <StyledTableContainer component={Paper}>
@@ -447,6 +459,17 @@ const VisitorList: React.FC = () => {
                 title="Delete Visitor"
                 subTitle="Are you sure you want to delete this visitor? This action cannot be undone."
                 onConfirm={confirmDelete}
+            />
+
+            {/* Status Confirmation Popup */}
+            <ConfirmationPopup
+                open={statusDialogOpen}
+                setOpen={setStatusDialogOpen}
+                title={`${statusPayload?.status === 'APPROVED' ? 'Approve' : 'Reject'} Visitor`}
+                subTitle={`Are you sure you want to ${statusPayload?.status?.toLowerCase()} this visitor?`}
+                onConfirm={confirmStatusUpdate}
+                confirmText={`Yes, ${statusPayload?.status === 'APPROVED' ? 'Approve' : 'Reject'}`}
+                confirmColor={statusPayload?.status === 'APPROVED' ? 'success' : 'error'}
             />
         </Box>
     );

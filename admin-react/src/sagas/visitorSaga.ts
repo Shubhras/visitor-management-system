@@ -102,10 +102,11 @@ function* addVisitorSaga(action: PayloadAction<AddVisitorPayload>) {
 function* updateVisitorStatusSaga(action: PayloadAction<{ id: number; status: Visitor['status'] }>) {
     try {
         const { id, status } = action.payload;
+        const endpoint = status === 'APPROVED' ? `/visitors/${id}/approve` : `/visitors/${id}/reject`;
+
         const response: AxiosResponse<VisitorApiResponse> = yield call(
             axiosInstance.patch,
-            `/visitors/${id}/status`,
-            { status }
+            endpoint
         );
 
         if (response.data.success) {

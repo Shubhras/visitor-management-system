@@ -113,7 +113,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
             }}
         >
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1, pt: 3, px: 3 }}>
-                <Typography variant="h5" sx={{ color: theme.palette.text.primary }}>
+                <Typography variant="h5" component="span" sx={{ color: theme.palette.text.primary }}>
                     {isEditMode ? 'Edit Visitor' : 'Add New Visitor'}
                 </Typography>
                 <IconButton onClick={onClose} size="small" sx={{ color: theme.palette.text.secondary }}>

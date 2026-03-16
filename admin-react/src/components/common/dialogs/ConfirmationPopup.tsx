@@ -15,6 +15,8 @@ type ConfirmationPopupProps = {
     title: string;
     subTitle?: string;
     onConfirm: () => void;
+    confirmText?: string;
+    confirmColor?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
 };
 
 const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
@@ -22,7 +24,9 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
     setOpen,
     title,
     subTitle,
-    onConfirm
+    onConfirm,
+    confirmText = 'Yes, Delete',
+    confirmColor = 'error'
 }) => {
     const handleClose = () => setOpen(false);
 
@@ -49,14 +53,14 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                         width: 80,
                         height: 80,
                         borderRadius: '50%',
-                        bgcolor: '#fff7ed',
+                        bgcolor: confirmColor === 'error' ? '#fff7ed' : (confirmColor === 'success' ? '#f0fdf4' : '#f0f9ff'),
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         mb: 3
                     }}
                 >
-                    <WarningIcon sx={{ fontSize: 50, color: '#f59e0b' }} />
+                    <WarningIcon sx={{ fontSize: 50, color: confirmColor === 'error' ? '#f59e0b' : (confirmColor === 'success' ? '#22c55e' : '#3b82f6') }} />
                 </Box>
 
                 <Box sx={{ mb: 2 }}>
@@ -89,7 +93,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                 </Button>
                 <Button
                     variant="contained"
-                    color="error"
+                    color={confirmColor}
                     onClick={handleConfirm}
                     sx={{
                         textTransform: 'none',
@@ -98,7 +102,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                         flex: 1
                     }}
                 >
-                    Yes, Delete
+                    {confirmText}
                 </Button>
             </DialogActions>
         </Dialog>

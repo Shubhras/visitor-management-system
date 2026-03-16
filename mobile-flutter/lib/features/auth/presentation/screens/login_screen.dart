@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:visitor_management/core/constants/app_colors.dart';
 import 'package:visitor_management/core/constants/dimensions.dart';
+import 'package:visitor_management/core/navigation/main_navigation_screen.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_event.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_state.dart';
@@ -72,9 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthSuccess) {
-              ScaffoldMessenger.of(
+              Navigator.pushReplacement(
                 context,
-              ).showSnackBar(SnackBar(content: Text('Login Successfully!!!!')));
+                MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+              );
             }
 
             if (state is AuthFailure) {

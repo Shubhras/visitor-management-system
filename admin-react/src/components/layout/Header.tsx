@@ -8,13 +8,15 @@ import {
     Avatar,
     Menu,
     MenuItem,
+    ListItemIcon,
+    ListItemText
 } from '@mui/material';
 import {
     Menu as MenuIcon,
     Person as PersonIcon,
     Logout as LogoutIcon,
 } from '@mui/icons-material';
-import { ListItemIcon, ListItemText } from '@mui/material';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 interface HeaderProps {
     handleDrawerToggle: () => void;
@@ -23,6 +25,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const { user } = useAppSelector((state) => state.auth);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -68,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                             }}
                         >
                             Genio
-                            <Box component="span" sx={{ color: 'secondary.main', fontSize: '1.1em' }}>
+                            <Box component="span" sx={{ color: '#f59e0b', ml: 0.5, fontSize: '1.1em' }}>
                                 360
                             </Box>
                         </Typography>
@@ -96,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                             display: { xs: 'none', sm: 'block' }
                         }}
                     >
-                        admin
+                        {user?.email || 'Admin'}
                     </Typography>
                 </Box>
 
@@ -106,21 +109,17 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                     onClose={handleClose}
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                    PaperProps={{
-                        sx: {
-                            mt: 1.5,
-                            minWidth: 180,
-                            boxShadow: '0px 5px 15px rgba(0,0,0,0.1)',
-                            borderRadius: 1
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                mt: 1.5,
+                                minWidth: 180,
+                                boxShadow: '0px 5px 15px rgba(0,0,0,0.1)',
+                                borderRadius: 1
+                            }
                         }
                     }}
                 >
-                    <MenuItem onClick={handleClose}>
-                        <ListItemIcon>
-                            <PersonIcon fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText>Profile</ListItemText>
-                    </MenuItem>
                     <MenuItem onClick={() => { handleClose(); handleLogout(); }}>
                         <ListItemIcon>
                             <LogoutIcon fontSize="small" />

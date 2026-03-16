@@ -52,7 +52,7 @@ function* fetchVisitorsSaga(action: PayloadAction<VisitorQueryParams>) {
 
         // Build query params for API
         const queryParams: Record<string, string | number> = {
-            page: params.page,
+            page: params.page + 1,
             limit: params.limit,
         };
 

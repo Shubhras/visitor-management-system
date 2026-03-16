@@ -103,7 +103,7 @@ const VisitorList: React.FC = () => {
     }, [loadVisitors]);
 
     const handleParamChange = (newParams: Partial<typeof params>) => {
-        dispatch(setQueryParams({ ...newParams, page: newParams.page !== undefined ? newParams.page : 0 }));
+        dispatch(setQueryParams({ ...newParams, page: newParams.page ?? 0 }));
     };
 
     const handleSearchChange = (value: string) => {
@@ -119,7 +119,7 @@ const VisitorList: React.FC = () => {
     };
 
     const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setQueryParams({ limit: parseInt(e.target.value, 10), page: 0 }));
+        dispatch(setQueryParams({ limit: Number.parseInt(e.target.value, 10), page: 0 }));
     };
 
     const handleReset = () => {
@@ -358,12 +358,6 @@ const VisitorList: React.FC = () => {
                     </Button>
                 </Stack>
             </Stack>
-
-            {/* {error && (
-                <Typography color="error" sx={{ mb: 2 }}>
-                    {error}
-                </Typography>
-            )} */}
 
             {/* Config-driven Table Section */}
             <StyledTableContainer component={Paper}>

@@ -26,12 +26,12 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import type { Visitor } from '../../features/visitor/visitorTypes';
 
 const visitorSchema = z.object({
-    name: z.string().min(2, 'Name must be at least 2 characters'),
+    name: z.string().min(3, 'Name must be at least 3 characters').max(50, 'Name cannot exceed 50 characters'),
     phone: z.string()
         .min(10, 'Phone must be at least 10 digits')
         .max(10, 'Phone must be exactly 10 digits')
         .regex(/^\d+$/, 'Phone must contain only numbers'),
-    unitNumber: z.string().min(1, 'Unit number is required'),
+    unitNumber: z.string().min(3, 'Unit number must be at least 3 characters').max(50, 'Unit number cannot exceed 50 characters'),
     visitDate: z.string().min(1, 'Visit date is required'),
 });
 
@@ -145,7 +145,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                 </Typography>
                                 <TextField
                                     {...register('name')}
-                                    placeholder="Enter full name"
+                                    placeholder="Enter visitor name"
                                     fullWidth
                                     error={!!errors.name}
                                     helperText={errors.name?.message}

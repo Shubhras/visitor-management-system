@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import type { RefreshTokenResponse } from '../features/auth/authTypes';
 
 interface QueueItem {
@@ -28,45 +28,54 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
-// Add a request interceptor to add the auth token to every request
+const handleLogout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+  // Using globalThis for better compatibility and to satisfy some linting rules
+  globalThis.location.href = '/login';
+};
+
 apiClient.interceptors.request.use(
-  (config) => {
+  (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
+  (error: AxiosError) => {
+    throw error;
   }
 );
 
-// Add a response interceptor to handle 401 errors with token refresh
 apiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as (AxiosRequestConfig & { _retry?: boolean }) | undefined;
 
-    // Only attempt refresh on 401 errors, and not on retry or auth endpoints
+    if (!originalRequest) {
+      throw error;
+    }
+
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url?.includes('/auth/refresh-token') &&
       !originalRequest.url?.includes('/auth/login')
     ) {
-      // If already refreshing, queue this request
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then((token) => {
+        try {
+          const token = await new Promise<string>((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          });
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${token}`;
           }
           return apiClient(originalRequest);
-        });
+        } catch (err) {
+          console.log(err);
+          throw err;
+        }
       }
 
       originalRequest._retry = true;
@@ -75,14 +84,10 @@ apiClient.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken');
 
       if (!refreshToken) {
-        // No refresh token available, force logout
         isRefreshing = false;
         processQueue(error, null);
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-        return Promise.reject(error);
+        handleLogout();
+        throw error;
       }
 
       try {
@@ -91,46 +96,33 @@ apiClient.interceptors.response.use(
           { refreshToken }
         );
 
-        const data = response.data;
+        const { data } = response;
 
         if (data.success) {
-          // Store new tokens
           localStorage.setItem('token', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
 
-          // Update the authorization header for the retried request
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
           }
 
-          // Process queued requests with new token
           processQueue(null, data.accessToken);
-
-          // Retry the original request
           return apiClient(originalRequest);
-        } else {
-          // Refresh failed, force logout
-          processQueue(error, null);
-          localStorage.removeItem('token');
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('user');
-          window.location.href = '/login';
-          return Promise.reject(error);
         }
+
+        processQueue(error, null);
+        handleLogout();
+        throw error;
       } catch (refreshError) {
-        // Refresh request failed, force logout
         processQueue(refreshError, null);
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-        return Promise.reject(refreshError);
+        handleLogout();
+        throw refreshError;
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(error);
+    throw error;
   }
 );
 

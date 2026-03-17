@@ -64,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                             variant="h5"
                             sx={{
                                 fontWeight: 800,
-                                color: '#',
+                                color: '#2d1b69',
                                 letterSpacing: '-0.5px',
                                 display: 'flex',
                                 alignItems: 'center',

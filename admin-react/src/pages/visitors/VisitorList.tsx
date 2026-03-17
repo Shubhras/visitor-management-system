@@ -75,6 +75,7 @@ const VisitorList: React.FC = () => {
     // Action tracking logic
     const isDeleting = useRef(false);
     const isUpdatingStatus = useRef(false);
+    const lastUpdatedStatus = useRef<Visitor['status'] | null>(null);
 
     // Notifications for List Actions
     useEffect(() => {
@@ -84,8 +85,10 @@ const VisitorList: React.FC = () => {
                 isDeleting.current = false;
             }
             if (isUpdatingStatus.current) {
-                toast.success('Status updated successfully!');
+                const message = lastUpdatedStatus.current === 'APPROVED' ? 'Approved successfully' : 'Rejected successfully';
+                toast.success(message);
                 isUpdatingStatus.current = false;
+                lastUpdatedStatus.current = null;
             }
         }
         if (!loading && error) {
@@ -148,6 +151,7 @@ const VisitorList: React.FC = () => {
     const confirmStatusUpdate = () => {
         if (statusPayload) {
             isUpdatingStatus.current = true;
+            lastUpdatedStatus.current = statusPayload.status;
             dispatch(updateVisitorStatusRequest(statusPayload));
             setStatusPayload(null);
         }
@@ -246,32 +250,34 @@ const VisitorList: React.FC = () => {
                 const isPending = visitor.status === 'PENDING';
                 return (
                     <ActionStack>
-                        <Tooltip title="Approve">
-                            <span>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
-                                    disabled={!isPending}
-                                    className="btn-action btn-approve"
-                                    sx={{ color: "#15803d" }}
-                                >
-                                    <ApproveIcon fontSize="small" />
-                                </IconButton>
-                            </span>
-                        </Tooltip>
-                        <Tooltip title="Reject">
-                            <span>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
-                                    disabled={!isPending}
-                                    className="btn-action btn-reject"
-                                    sx={{ color: "#b91c1c" }}
-                                >
-                                    <RejectIcon fontSize="small" />
-                                </IconButton>
-                            </span>
-                        </Tooltip>
+                        {isPending && (
+                            <>
+                                <Tooltip title="Approve">
+                                    <span>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
+                                            className="btn-action btn-approve"
+                                            sx={{ color: "#15803d" }}
+                                        >
+                                            <ApproveIcon fontSize="small" />
+                                        </IconButton>
+                                    </span>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                    <span>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
+                                            className="btn-action btn-reject"
+                                            sx={{ color: "#b91c1c" }}
+                                        >
+                                            <RejectIcon fontSize="small" />
+                                        </IconButton>
+                                    </span>
+                                </Tooltip>
+                            </>
+                        )}
                         <Tooltip title="Edit">
                             <IconButton
                                 size="small"

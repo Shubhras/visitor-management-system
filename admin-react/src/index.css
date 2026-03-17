@@ -178,6 +178,7 @@ body {
     background-color: #6001D3 !important;
     box-shadow: 0 10px 15px -3px rgba(96, 1, 211, 0.3) !important;
     transition: all 0.2s ease !important;
+    min-width: 120px !important
   }
 
   .btn-submit:hover {

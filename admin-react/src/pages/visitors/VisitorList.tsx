@@ -242,61 +242,66 @@ const VisitorList: React.FC = () => {
             label: 'Action',
             minWidth: 150,
             align: 'center',
-            render: (visitor) => (
-                <ActionStack>
-                    <Tooltip title="Approve">
-                        <span>
+            render: (visitor: Visitor) => {
+                const isPending = visitor.status === 'PENDING';
+                return (
+                    <ActionStack>
+                        <Tooltip title="Approve">
+                            <span>
+                                <IconButton
+                                    color="success"
+                                    size="small"
+                                    onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
+                                    disabled={!isPending}
+                                    sx={{
+                                        bgcolor: 'rgba(74, 222, 128, 0.1)',
+                                        '&.Mui-disabled': { bgcolor: 'transparent' },
+                                        '&:hover': { bgcolor: 'rgba(74, 222, 128, 0.2)' }
+                                    }}
+                                >
+                                    <ApproveIcon fontSize="small" />
+                                </IconButton>
+                            </span>
+                        </Tooltip>
+                        <Tooltip title="Reject">
+                            <span>
+                                <IconButton
+                                    color="error"
+                                    size="small"
+                                    onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
+                                    disabled={!isPending}
+                                    sx={{
+                                        bgcolor: 'rgba(248, 113, 113, 0.1)',
+                                        '&.Mui-disabled': { bgcolor: 'transparent' },
+                                        '&:hover': { bgcolor: 'rgba(248, 113, 113, 0.2)' }
+                                    }}
+                                >
+                                    <RejectIcon fontSize="small" />
+                                </IconButton>
+                            </span>
+                        </Tooltip>
+                        <Tooltip title="Edit">
                             <IconButton
-                                color="success"
+                                color="primary"
                                 size="small"
-                                onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
-                                disabled={visitor.status === 'APPROVED'}
-                                sx={{
-                                    bgcolor: visitor.status === 'APPROVED' ? 'transparent' : 'rgba(74, 222, 128, 0.1)',
-                                    '&:hover': { bgcolor: 'rgba(74, 222, 128, 0.2)' }
-                                }}
+                                onClick={() => handleEditClick(visitor)}
+                                sx={{ bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' } }}
                             >
-                                <ApproveIcon fontSize="small" />
+                                <EditIcon fontSize="small" />
                             </IconButton>
-                        </span>
-                    </Tooltip>
-                    <Tooltip title="Reject">
-                        <span>
+                        </Tooltip>
+                        <Tooltip title="Delete">
                             <IconButton
-                                color="error"
                                 size="small"
-                                onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
-                                disabled={visitor.status === 'REJECTED'}
-                                sx={{
-                                    bgcolor: visitor.status === 'REJECTED' ? 'transparent' : 'rgba(248, 113, 113, 0.1)',
-                                    '&:hover': { bgcolor: 'rgba(248, 113, 113, 0.2)' }
-                                }}
+                                onClick={() => handleDelete(visitor.id)}
+                                sx={{ color: '#94a3b8', bgcolor: '#f1f5f9', '&:hover': { bgcolor: '#e2e8f0', color: '#ef4444' } }}
                             >
-                                <RejectIcon fontSize="small" />
+                                <DeleteIcon fontSize="small" />
                             </IconButton>
-                        </span>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                        <IconButton
-                            color="primary"
-                            size="small"
-                            onClick={() => handleEditClick(visitor)}
-                            sx={{ bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' } }}
-                        >
-                            <EditIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton
-                            size="small"
-                            onClick={() => handleDelete(visitor.id)}
-                            sx={{ color: '#94a3b8', bgcolor: '#f1f5f9', '&:hover': { bgcolor: '#e2e8f0', color: '#ef4444' } }}
-                        >
-                            <DeleteIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                </ActionStack>
-            )
+                        </Tooltip>
+                    </ActionStack>
+                );
+            }
         }
     ];
 
@@ -374,7 +379,6 @@ const VisitorList: React.FC = () => {
                             <Loader />
                         </Box>
                     )}
-
 
                     <Table stickyHeader>
                         <TableHead>

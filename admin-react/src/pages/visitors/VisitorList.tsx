@@ -340,7 +340,6 @@ const VisitorList: React.FC = () => {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
                 <Stack direction="row" spacing={2} sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'flex-end' }}>
                     <ResetButtonTableFilter onReset={handleReset} />
-
                     <Button
                         variant="contained"
                         startIcon={<AddIcon />}

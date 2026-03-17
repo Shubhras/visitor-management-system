@@ -11,9 +11,10 @@ export const StyledTableContainer = styled(TableContainer)<TableContainerProps>(
     borderRadius: theme.shape.borderRadius,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: '0px 20px 25px -5px rgba(0, 0, 0, 0.02), 0px 10px 10px -5px rgba(0, 0, 0, 0.01)',
-    overflowX: 'auto',
+    maxHeight: 'calc(100vh - 280px)',
+    overflow: 'auto',
     '& .MuiTable-root': {
-        minWidth: 650,
+        minWidth: 800,
     },
 }));
 
@@ -29,6 +30,7 @@ export const StyledHeaderCell = styled(TableCell)(({ theme }) => ({
         textTransform: 'uppercase',
         letterSpacing: '0.05em',
         padding: '16px',
+        verticalAlign: 'middle',
         borderBottom: `1px solid ${theme.palette.divider}`,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -44,6 +46,7 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
     transition: 'all 0.2s ease',
     '& td': {
         padding: '12px 16px',
+        verticalAlign: 'middle',
         borderColor: theme.palette.divider,
     },
     '&:hover': {

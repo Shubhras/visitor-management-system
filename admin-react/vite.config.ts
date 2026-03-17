@@ -12,4 +12,8 @@ export default defineConfig({
     strictPort: false,
     port: 3001,
   },
+  preview: {
+    port: 3001,
+    strictPort: true,
+  },
 })

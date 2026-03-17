@@ -134,30 +134,11 @@ const Login: React.FC = () => {
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    ml: 1.5,
+                                    ml: 0.5,
                                     width: '64px',
-                                    height: '64px',
-                                    borderRadius: '50%',
-                                    '&::before, &::after': {
-                                        content: '""',
-                                        position: 'absolute',
-                                        inset: 0,
-                                        borderRadius: '50%',
-                                        border: '4px solid transparent',
-                                        background: 'linear-gradient(180deg, #e9d5ff 0%, #9333ea 100%) border-box',
-                                        WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
-                                        WebkitMaskComposite: 'destination-out',
-                                        maskComposite: 'exclude',
-                                    },
-                                    '&::before': {
-                                        clipPath: 'polygon(0 0, 100% 0, 100% 42%, 0 42%)',
-                                    },
-                                    '&::after': {
-                                        clipPath: 'polygon(0 58%, 100% 58%, 100% 100%, 0 100%)',
-                                    }
                                 }}
                             >
-                                <Box component="span" sx={{ fontSize: '0.6em', color: '#7c4dff', fontWeight: 900 }}>
+                                <Box component="span" sx={{ color: theme.palette.text.primary, fontWeight: 900 }}>
                                     360
                                 </Box>
                             </Box>

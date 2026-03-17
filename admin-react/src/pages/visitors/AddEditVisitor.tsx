@@ -116,31 +116,41 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
         <Dialog
             open={open}
             onClose={onClose}
-            maxWidth="sm"
+            maxWidth="xs"
             fullWidth
             slotProps={{
                 paper: {
-                    sx: { borderRadius: '24px', p: 1 }
+                    sx: {
+                        borderRadius: '24px',
+                        p: 0,
+                        overflow: 'hidden',
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                    }
                 }
             }}
         >
-            <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1, pt: 3, px: 3 }}>
-                <Typography variant="h5" component="span" sx={{ color: theme.palette.text.primary }}>
+            <DialogTitle sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                pb: 1,
+                pt: 3,
+                px: 3
+            }}>
+                <Typography variant="h5" component="span" sx={{ fontWeight: 800, color: '#1e293b' }}>
                     {isEditMode ? 'Edit Visitor' : 'Add New Visitor'}
                 </Typography>
-                <IconButton onClick={onClose} size="small" sx={{ color: theme.palette.text.secondary }}>
+                <IconButton onClick={onClose} size="small" sx={{ color: '#94a3b8' }}>
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
 
-            <DialogContent>
+            <DialogContent sx={{ px: 3 }}>
                 <Box sx={{ mt: 1 }}>
-
-
                     <form id="visitor-form" onSubmit={handleSubmit(onSubmit)}>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: 3 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
                             <Box>
-                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
+                                <Typography variant="body2" sx={{ mb: 0.8, fontWeight: 700, color: '#1e293b' }}>
                                     Visitor Name <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
                                 </Typography>
                                 <TextField
@@ -153,7 +163,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                         input: {
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <Person sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                    <Person sx={{ color: '#94a3b8', fontSize: '1.2rem' }} />
                                                 </InputAdornment>
                                             ),
                                         },
@@ -161,7 +171,10 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
                                             borderRadius: '12px',
-                                            backgroundColor: theme.palette.background.paper,
+                                            backgroundColor: '#fff',
+                                            '& fieldset': { borderColor: '#e2e8f0' },
+                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
+                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
                                         }
                                     }}
                                 />
@@ -173,7 +186,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                 </Typography>
                                 <TextField
                                     {...register('phone')}
-                                    placeholder="10-digit number"
+                                    placeholder="Enter phone number"
                                     fullWidth
                                     error={!!errors.phone}
                                     helperText={errors.phone?.message}
@@ -186,7 +199,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                         input: {
                                             startAdornment: (
                                                 <InputAdornment position="start">
-                                                    <Phone sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                    <Phone sx={{ color: '#94a3b8', fontSize: '1.2rem' }} />
                                                 </InputAdornment>
                                             ),
                                         },
@@ -194,99 +207,115 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
                                             borderRadius: '12px',
-                                            backgroundColor: theme.palette.background.paper,
+                                            backgroundColor: '#fff',
+                                            '& fieldset': { borderColor: '#e2e8f0' },
+                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
+                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
                                         }
                                     }}
                                 />
                             </Box>
-
-                            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                                <Box>
-                                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
-                                        Unit Number <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
-                                    </Typography>
-                                    <TextField
-                                        {...register('unitNumber')}
-                                        placeholder="e.g. 101"
-                                        fullWidth
-                                        error={!!errors.unitNumber}
-                                        helperText={errors.unitNumber?.message}
-                                        slotProps={{
-                                            input: {
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Home sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
-                                                    </InputAdornment>
-                                                ),
-                                            },
-                                        }}
-                                        sx={{
-                                            '& .MuiOutlinedInput-root': {
-                                                borderRadius: '12px',
-                                                backgroundColor: theme.palette.background.paper,
-                                            }
-                                        }}
-                                    />
-                                </Box>
-                                <Box>
-                                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
-                                        Visit Date <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
-                                    </Typography>
-                                    <Controller
-                                        name="visitDate"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <DatePicker
-                                                minDate={DateTime.now()}
-                                                value={field.value ? DateTime.fromISO(field.value) : null}
-                                                onChange={(newValue: DateTime | null) => {
-                                                    field.onChange(newValue ? newValue.toISODate() : '');
-                                                }}
-                                                slotProps={{
-                                                    textField: {
-                                                        fullWidth: true,
-                                                        error: !!errors.visitDate,
-                                                        helperText: errors.visitDate?.message,
-                                                        placeholder: "Select Date",
-                                                        slotProps: {
-                                                            input: {
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start" sx={{ mr: 1 }}>
-                                                                        <Event sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
-                                                                    </InputAdornment>
-                                                                ),
-                                                            },
+                            <Box>
+                                <Typography variant="body2" sx={{ mb: 0.8, fontWeight: 700, color: '#1e293b' }}>
+                                    Unit Number <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                </Typography>
+                                <TextField
+                                    {...register('unitNumber')}
+                                    placeholder="Enter unit number"
+                                    fullWidth
+                                    error={!!errors.unitNumber}
+                                    helperText={errors.unitNumber?.message}
+                                    slotProps={{
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Home sx={{ color: '#94a3b8', fontSize: '1.2rem' }} />
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '12px',
+                                            backgroundColor: '#fff',
+                                            '& fieldset': { borderColor: '#e2e8f0' },
+                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
+                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
+                                        }
+                                    }}
+                                />
+                            </Box>
+                            <Box>
+                                <Typography variant="body2" sx={{ mb: 0.8, fontWeight: 700, color: '#1e293b' }}>
+                                    Visit Date <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                </Typography>
+                                <Controller
+                                    name="visitDate"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <DatePicker
+                                            minDate={DateTime.now()}
+                                            value={field.value ? DateTime.fromISO(field.value) : null}
+                                            onChange={(newValue: DateTime | null) => {
+                                                field.onChange(newValue ? newValue.toISODate() : '');
+                                            }}
+                                            slotProps={{
+                                                textField: {
+                                                    fullWidth: true,
+                                                    error: !!errors.visitDate,
+                                                    helperText: errors.visitDate?.message,
+                                                    placeholder: "Select Date",
+                                                    slotProps: {
+                                                        input: {
+                                                            startAdornment: (
+                                                                <InputAdornment position="start" sx={{ mr: 1 }}>
+                                                                    <Event sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                                </InputAdornment>
+                                                            ),
                                                         },
-                                                        sx: {
-                                                            '& .MuiOutlinedInput-root': {
-                                                                borderRadius: '12px',
-                                                                backgroundColor: theme.palette.background.paper,
-                                                            }
+                                                    },
+                                                    sx: {
+                                                        '& .MuiOutlinedInput-root': {
+                                                            borderRadius: '12px',
+                                                            backgroundColor: '#fff',
+                                                            '& fieldset': { borderColor: '#e2e8f0' },
+                                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
+                                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
+                                                        },
+                                                        '& .MuiInputAdornment-root': {
+                                                            color: '#94a3b8'
                                                         }
                                                     }
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Box>
+                                                }
+                                            }}
+                                        />
+                                    )}
+                                />
                             </Box>
                         </Box>
                     </form>
                 </Box>
             </DialogContent>
 
-            <DialogActions sx={{ px: 3, pb: 4, pt: 2, justifyContent: 'space-between' }}>
+            <DialogActions sx={{ px: 3, pb: 4, pt: 1, justifyContent: 'space-between', gap: 2 }}>
                 <Button
                     variant="outlined"
                     color="inherit"
                     onClick={onClose}
                     disabled={loading}
                     sx={{
+                        px: 4,
                         textTransform: 'none',
-                        borderRadius: '8px',
-                        borderColor: '#cbd5e1',
+                        borderRadius: '12px',
+                        borderColor: '#e2e8f0',
                         color: '#64748b',
                         fontWeight: 600,
+                        height: 48,
+                        flex: 1,
+                        '&:hover': {
+                            backgroundColor: '#f8fafc',
+                            borderColor: '#cbd5e1'
+                        }
                     }}
                 >
                     Cancel
@@ -297,17 +326,18 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                     variant="contained"
                     disabled={loading}
                     sx={{
-                        px: 6,
-                        borderRadius: '16px',
+                        px: 4,
+                        borderRadius: '12px',
                         fontWeight: 700,
-                        minWidth: 120,
+                        flex: 2,
                         height: 48,
                         textTransform: 'none',
-                        boxShadow: '0px 10px 20px rgba(41, 98, 255, 0.2)',
-                        transition: 'all 0.3s ease',
+                        backgroundColor: '#6001D3',
+                        boxShadow: '0 10px 15px -3px rgba(96, 1, 211, 0.3)',
                         '&:hover': {
-                            boxShadow: '0px 15px 30px rgba(41, 98, 255, 0.3)',
-                            transform: 'translateY(-2px)'
+                            backgroundColor: '#4c01a8',
+                            boxShadow: '0 20px 25px -5px rgba(96, 1, 211, 0.4)',
+                            transform: 'translateY(-1px)'
                         }
                     }}
                 >

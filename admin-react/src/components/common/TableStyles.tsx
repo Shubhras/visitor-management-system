@@ -11,7 +11,7 @@ export const StyledTableContainer = styled(TableContainer)<TableContainerProps>(
     borderRadius: theme.shape.borderRadius,
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: '0px 20px 25px -5px rgba(0, 0, 0, 0.02), 0px 10px 10px -5px rgba(0, 0, 0, 0.01)',
-    overflow: 'hidden',
+    overflowX: 'auto',
     '& .MuiTable-root': {
         minWidth: 650,
     },

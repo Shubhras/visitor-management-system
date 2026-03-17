@@ -110,4 +110,71 @@ body {
   .table-responsive-container {
     max-width: 100%;
   }
+
+  /* Visitor Dialog & Form Styles */
+  .visitor-dialog-paper {
+    border-radius: 24px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .form-field-label {
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+    display: block;
+  }
+
+  .form-field-label span {
+    color: #ef4444 !important;
+  }
+
+  .custom-textfield .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease;
+  }
+
+  .custom-textfield .MuiOutlinedInput-root fieldset {
+    border-color: #e2e8f0 !important;
+  }
+
+  .custom-textfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: #cbd5e1 !important;
+  }
+
+  .custom-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #6366f1 !important;
+  }
+
+  .btn-cancel {
+    border-radius: 12px !important;
+    border-color: #e2e8f0 !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+    height: 48px !important;
+    text-transform: none !important;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .btn-submit {
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    height: 48px !important;
+    text-transform: none !important;
+    background-color: #6001D3 !important;
+    box-shadow: 0 10px 15px -3px rgba(96, 1, 211, 0.3) !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .btn-submit:hover {
+    background-color: #4c01a8 !important;
+    box-shadow: 0 20px 25px -5px rgba(96, 1, 211, 0.4) !important;
+    transform: translateY(-1px);
+  }
 }

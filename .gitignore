@@ -1,4 +1,14 @@
-# Logs
+# Node modules
+node_modules/
+
+# package lock files
+package-lock.json
+
+# build folders
+dist/
+build/
+
+# logs
 logs
 *.log
 npm-debug.log*
@@ -64,11 +74,6 @@ web_modules/
 
 # Yarn Integrity file
 .yarn-integrity
-
-# dotenv environment variable files
-.env
-.env.*
-!.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -137,3 +142,29 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# environment files
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# NestJS build
+coverage/
+
+# Ignore all microservice dependencies
+api-gateway/node_modules/
+auth-service/node_modules/
+user-service/node_modules/
+visitor-service/node_modules/
+
+# Ignore lock files
+api-gateway/package-lock.json
+auth-service/package-lock.json
+user-service/package-lock.json
+visitor-service/package-lock.json

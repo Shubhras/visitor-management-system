@@ -133,16 +133,10 @@ CREATE DATABASE visitor_db;
 
 Each microservice should have its own `.env` file.
 
-Example:
+Copy .env file from the `.env.example` file and update the configure:
 
 ```
-DB_HOST=localhost
-DB_PORT=3306
-DB_USERNAME=root
-DB_PASSWORD=password
-
-JWT_SECRET=supersecret
-JWT_EXPIRES_IN=1d
+cp .env.example .env
 ```
 
 ---
@@ -152,9 +146,9 @@ JWT_EXPIRES_IN=1d
 Clone repository
 
 ```
-git clone <repository_url>
-
+git clone https://github.com/Shubhras/visitor-management-system
 cd visitor-management-backend
+git checkout deveplopment
 ```
 
 Install dependencies for each service.
@@ -305,6 +299,12 @@ Create migration:
 
 ```
 npx sequelize-cli migration:generate --name create-users
+```
+
+Run All Seeders:
+
+```
+npx sequelize-cli db:seed:all
 ```
 
 ---

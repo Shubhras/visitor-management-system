@@ -110,26 +110,71 @@ const ResetPassword: React.FC = () => {
                             left: 0,
                             right: 0,
                             bottom: 0,
-                            backgroundColor: 'rgba(0,0,0,0.1)',
+                            backgroundColor: 'rgba(0,0,0,0.02)',
                         }
                     }}
                 >
                     <Box sx={{ position: 'relative', zIndex: 1 }}>
-                        <Typography
-                            variant="h3"
-                            sx={{
-                                fontWeight: 900,
-                                color: theme.palette.text.primary,
-                                letterSpacing: '-1.5px',
-                                display: 'flex',
-                                alignItems: 'baseline',
-                            }}
-                        >
-                            iPlus
-                            <Box component="span" sx={{ color: '#2ecc71', ml: 1, fontSize: '0.8em' }}>
-                                living
-                            </Box>
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography
+                                variant="h3"
+                                sx={{
+                                    fontWeight: 800,
+                                    fontSize: { xs: '2.5rem', md: '3.5rem' },
+                                    color: '#ffffff',
+                                    letterSpacing: '-1.5px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    lineHeight: 1,
+                                    textShadow: '0px 2px 10px rgba(0,0,0,0.2)'
+                                }}
+                            >
+                                Genio
+                                <Box
+                                    component="span"
+                                    sx={{
+                                        position: 'relative',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        ml: 1.5,
+                                        width: { xs: '70px', md: '95px' },
+                                        height: { xs: '70px', md: '95px' },
+                                        borderRadius: '50%',
+                                        filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.15))',
+                                        '&::before, &::after': {
+                                            content: '""',
+                                            position: 'absolute',
+                                            inset: 0,
+                                            borderRadius: '50%',
+                                            border: '6px solid transparent',
+                                            background: 'linear-gradient(180deg, #e9d5ff 0%, #9333ea 100%) border-box',
+                                            WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                                            WebkitMaskComposite: 'destination-out',
+                                            maskComposite: 'exclude',
+                                        },
+                                        '&::before': {
+                                            clipPath: 'polygon(0 0, 100% 0, 100% 42%, 0 42%)',
+                                        },
+                                        '&::after': {
+                                            clipPath: 'polygon(0 58%, 100% 58%, 100% 100%, 0 100%)',
+                                        }
+                                    }}
+                                >
+                                    <Box
+                                        component="span"
+                                        sx={{
+                                            color: '#ffffff',
+                                            fontSize: '0.85em',
+                                            fontWeight: 900,
+                                            letterSpacing: '-1px'
+                                        }}
+                                    >
+                                        360
+                                    </Box>
+                                </Box>
+                            </Typography>
+                        </Box>
                     </Box>
                 </Box>
 

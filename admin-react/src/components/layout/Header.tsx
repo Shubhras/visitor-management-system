@@ -63,16 +63,47 @@ const Header: React.FC<HeaderProps> = ({ handleDrawerToggle, handleLogout }) => 
                         <Typography
                             variant="h5"
                             sx={{
-                                fontWeight: 900,
-                                color: 'primary.main',
+                                fontWeight: 800,
+                                color: '#',
                                 letterSpacing: '-0.5px',
                                 display: 'flex',
-                                alignItems: 'baseline',
+                                alignItems: 'center',
                             }}
                         >
                             Genio
-                            <Box component="span" sx={{ color: '#f59e0b', ml: 0.5, fontSize: '1.1em' }}>
-                                360
+                            <Box
+                                component="span"
+                                sx={{
+                                    position: 'relative',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    ml: 0.8,
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '50%',
+                                    '&::before, &::after': {
+                                        content: '""',
+                                        position: 'absolute',
+                                        inset: 0,
+                                        borderRadius: '50%',
+                                        border: '3px solid transparent',
+                                        background: 'linear-gradient(180deg, #e9d5ff 0%, #9333ea 100%) border-box',
+                                        WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                                        WebkitMaskComposite: 'destination-out',
+                                        maskComposite: 'exclude',
+                                    },
+                                    '&::before': {
+                                        clipPath: 'polygon(0 0, 100% 0, 100% 42%, 0 42%)',
+                                    },
+                                    '&::after': {
+                                        clipPath: 'polygon(0 58%, 100% 58%, 100% 100%, 0 100%)',
+                                    }
+                                }}
+                            >
+                                <Box component="span" sx={{ fontSize: '0.75em', color: '#7c4dff', fontWeight: 900, letterSpacing: '-0.5px' }}>
+                                    360
+                                </Box>
                             </Box>
                         </Typography>
                     </Box>

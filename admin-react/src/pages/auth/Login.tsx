@@ -23,7 +23,7 @@ import loginBg from '../../assets/login-bg.png';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
-    email: z.string().email('Invalid email address'),
+    email: z.email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -127,9 +127,9 @@ const Login: React.FC = () => {
                                 alignItems: 'baseline',
                             }}
                         >
-                            iPlus
+                            Genio
                             <Box component="span" sx={{ color: '#2ecc71', ml: 1, fontSize: '0.8em' }}>
-                                living
+                                360
                             </Box>
                         </Typography>
                     </Box>
@@ -153,7 +153,7 @@ const Login: React.FC = () => {
                                 fontWeight: 800,
                                 color: theme.palette.text.primary,
                                 mb: 1.5,
-                                fontSize: { xs: '2rem', md: '2.5rem' }
+                                fontSize: { xs: '1.5rem', md: '2rem' }
                             }}
                         >
                             Welcome Back!!
@@ -279,4 +279,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-

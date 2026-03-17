@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:visitor_management/core/constants/app_colors.dart';
 import 'package:visitor_management/core/constants/dimensions.dart';
 import 'package:visitor_management/core/navigation/main_navigation_screen.dart';
+import 'package:visitor_management/core/utils/validators.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_event.dart';
 import 'package:visitor_management/features/auth/presentation/bloc/auth_state.dart';
@@ -25,34 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool obscurePassword = true;
   bool isFormValid = false;
-
-  /// Email validation
-  String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Email is required";
-    }
-
-    final emailRegex = RegExp(r'^[\w\.-]+@([\w\-]+\.)+[A-Za-z]{2,4}$');
-
-    if (!emailRegex.hasMatch(value)) {
-      return "Enter a valid email address";
-    }
-
-    return null;
-  }
-
-  /// Password validation
-  String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Password is required";
-    }
-
-    if (value.length < 6) {
-      return "Password must be at least 6 characters";
-    }
-
-    return null;
-  }
 
   void checkForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
@@ -162,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 label: "Email Address",
                                 prefixIcon: Icons.email_outlined,
                                 keyboardType: TextInputType.emailAddress,
-                                validator: validateEmail,
+                                validator: Validators.email,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s"),
@@ -181,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 label: "Password",
                                 prefixIcon: Icons.lock_outline,
                                 obscureText: obscurePassword,
-                                validator: validatePassword,
+                                validator: Validators.password,
                                 onChanged: (_) => checkForm(),
 
                                 suffixIcon: IconButton(

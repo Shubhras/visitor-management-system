@@ -7,7 +7,12 @@ import {
     Button,
     Box,
 } from '@mui/material';
-import { WarningAmber as WarningIcon } from '@mui/icons-material';
+import {
+    CheckCircleOutline as SuccessIcon,
+    ErrorOutline as ErrorIcon,
+    InfoOutlined as InfoIcon,
+    ReportProblemOutlined as WarningAmberIcon
+} from '@mui/icons-material';
 
 type ConfirmationPopupProps = {
     open: boolean;
@@ -37,14 +42,54 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
         }
     };
 
+    const getIconConfig = () => {
+        switch (confirmColor) {
+            case 'success':
+                return {
+                    Icon: SuccessIcon,
+                    bgColor: '#f0fdf4', // light green
+                    iconColor: '#22c55e', // green
+                };
+            case 'error':
+                return {
+                    Icon: ErrorIcon,
+                    bgColor: '#fef2f2', // light red
+                    iconColor: '#ef4444', // red
+                };
+            case 'warning':
+                return {
+                    Icon: WarningAmberIcon,
+                    bgColor: '#fff7ed', // light orange
+                    iconColor: '#f59e0b', // orange
+                };
+            case 'info':
+            case 'primary':
+                return {
+                    Icon: InfoIcon,
+                    bgColor: '#f0f9ff', // light blue
+                    iconColor: '#3b82f6', // blue
+                };
+            default:
+                return {
+                    Icon: InfoIcon,
+                    bgColor: '#f8fafc',
+                    iconColor: '#64748b',
+                };
+        }
+    };
+
+    const { Icon, bgColor, iconColor } = getIconConfig();
+
     return (
         <Dialog
             fullWidth
             maxWidth="xs"
             open={open}
             onClose={handleClose}
-            PaperProps={{
-                sx: { borderRadius: '16px', p: 1 }
+            slotProps={{
+                paper: {
+                    sx: { borderRadius: '16px', p: 1 }
+                }
             }}
         >
             <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', pt: 4, pb: 2 }}>
@@ -53,14 +98,14 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
                         width: 80,
                         height: 80,
                         borderRadius: '50%',
-                        bgcolor: confirmColor === 'error' ? '#fff7ed' : (confirmColor === 'success' ? '#f0fdf4' : '#f0f9ff'),
+                        bgcolor: bgColor,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         mb: 3
                     }}
                 >
-                    <WarningIcon sx={{ fontSize: 50, color: confirmColor === 'error' ? '#f59e0b' : (confirmColor === 'success' ? '#22c55e' : '#3b82f6') }} />
+                    <Icon sx={{ fontSize: 50, color: iconColor }} />
                 </Box>
 
                 <Box sx={{ mb: 2 }}>

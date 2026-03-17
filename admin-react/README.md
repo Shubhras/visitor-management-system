@@ -1,8 +1,20 @@
-# Visitor Management System (VMS) - Frontend
+# Visitor Management System (VMS) - Admin Panel
 
-A modern, feature-rich Visitor Management System built with React, TypeScript, and Material UI. 
+A modern, high-performance Visitor Management System built with **React 19**, **TypeScript**, and **Material UI**. This admin panel allows for efficient visitor tracking, status management (Approve/Reject), and real-time monitoring.
 
-##  Getting Started
+## 🚀 Key Features
+
+- **Intuitive Dashboard**: Overview of visitor statistics and system status.
+- **Advanced Visitor Management**: Full CRUD (Create, Read, Update, Delete) operations for visitors.
+- **Status Workflow**: Approve or Reject visitor requests with instant UI feedback.
+- **Smart Filtering**: Search and filter visitors by name, status, or date.
+- **Responsive Design**: Fully optimized for Desktop, Tablet, and Mobile screens.
+- **Secure Auth**: Token-based authentication with automatic refresh mechanism.
+- **Premium UI**: Clean, modern aesthetics with Material UI and custom styling.
+
+---
+
+## 🛠️ Getting Started
 
 Follow these instructions to get the project up and running on your local machine.
 
@@ -11,12 +23,12 @@ Follow these instructions to get the project up and running on your local machin
 - **Node.js**: v18.x or higher
 - **npm**: v9.x or higher
 
-###  Local Installation
+### Local Installation
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
-   cd frontend
+   git clone https://github.com/Shubhras/visitor-management-system.git
+   cd admin-react
    ```
 
 2. **Install dependencies**:
@@ -25,9 +37,9 @@ Follow these instructions to get the project up and running on your local machin
    ```
 
 3. **Environment Setup**:
-   Create a `.env` file in the root directory (copy from `.env.example` if available) and configure your API base URL:
+   Create a `.env` file in the root directory and configure your API base URL:
    ```bash
-   VITE_API_BASE_URL=http://localhost:8000/
+   VITE_API_BASE_URL=http://localhost:3000/
    VITE_APP_NAME="Visitor Management Admin"
    ```
 
@@ -35,74 +47,60 @@ Follow these instructions to get the project up and running on your local machin
    ```bash
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+   Open [http://localhost:3001](http://localhost:3001) to view it in the browser.
 
 ---
 
-##  Environment Configuration
+## ⚙️ Environment Configuration
 
-The project uses environment-based configurations. You can create different `.env` files for different stages:
+The project uses mode-based configurations for different stages:
 
-- **Development (`.env`)**: Used during `npm run dev`.
-- **Staging (`.env.staging`)**: Used for staging builds.
-- **Production (`.env.production`)**: Used for final production builds.
+- **Development (`.env`)**: Default dev settings.
+- **Staging (`.env.staging`)**: Settings for staging environment.
+- **Production (`.env.production`)**: Optimized production settings.
 
-**Example variables**:
-- `VITE_API_BASE_URL`: The root URL for your backend API.
-- `VITE_APP_NAME`: Title of the application.
-
-To build for a specific mode, use:
+**Build Commands**:
 ```bash
 # Build for staging
-vite build --mode staging
+npm run build -- --mode staging
 
 # Build for production
-vite build --mode production
+npm run build -- --mode production
 ```
 
 ---
 
-##  Deployment (Server)
+## 📦 Tech Stack
 
-To deploy the application to a production server:
-
-1. **Generate the build**:
-   ```bash
-   npm run build
-   ```
-   This will create a `dist/` folder with optimized static assets.
-
-2. **Serve the build**:
-   You can serve the `dist/` folder using any static web server (Nginx, Apache, or Vercel/Netlify).
-   
-   **Nginx Configuration Example**:
-   ```nginx
-   server {
-       listen 80;
-       server_name yourdomain.com;
-       root /path/to/project/dist;
-       index index.html;
-
-       location / {
-           try_files $uri $uri/ /index.html;
-       }
-   }
-   ```
+- **Core**: React 19, TypeScript, Vite
+- **UI Framework**: Material UI (MUI) v7
+- **Icons**: MUI Icons (Material Design)
+- **State Management**: Redux Toolkit & Redux-Saga
+- **Form Handling**: React Hook Form
+- **Validation**: Zod
+- **Date Handling**: Luxon
+- **API Client**: Axios (with Interceptors for Auth)
 
 ---
 
-##  Tech Stack
+## 📜 Available Scripts
 
-- **Framework**: React 19 (Vite)
-- **Language**: TypeScript
-- **State Management**: Redux Toolkit & Redux-Saga
-- **UI Library**: Material UI (MUI)
-- **Form Handling**: React Hook Form & Zod (Validation)
-- **API Client**: Axios
-
-##  Available Scripts
-
-- `npm run dev`: Starts the local development server.
+- `npm run dev`: Starts the local development server on port 3001.
 - `npm run build`: Compiles the application for production.
-- `npm run lint`: Runs ESLint to check for code quality issues.
-- `npm run preview`: Previews the production build locally.
+- `npm run lint`: Runs ESLint to identify code quality issues.
+- `npm run preview`: Locally previews the generated production build.
+
+---
+
+## 🚀 Deployment
+
+1. **Build the project**: `npm run build`
+2. **Output**: The optimized files will be in the `dist/` directory.
+3. **Serving**: Use Nginx or any static host. Ensure you handle client-side routing by redirecting all requests to `index.html`.
+
+**Nginx Config Snippet**:
+```nginx
+location / {
+    try_files $uri $uri/ /index.html;
+}
+```

@@ -233,21 +233,6 @@ const Login: React.FC = () => {
                                     }
                                 }}
                             />
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                                <Link
-                                    component={RouterLink}
-                                    to="/forgot-password"
-                                    sx={{
-                                        color: theme.palette.primary.main,
-                                        fontWeight: 700,
-                                        textDecoration: 'none',
-                                        fontSize: '0.875rem',
-                                        '&:hover': { textDecoration: 'underline' }
-                                    }}
-                                >
-                                    Forgot Password?
-                                </Link>
-                            </Box>
                         </Box>
 
                         <Button

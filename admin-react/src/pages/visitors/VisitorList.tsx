@@ -249,15 +249,11 @@ const VisitorList: React.FC = () => {
                         <Tooltip title="Approve">
                             <span>
                                 <IconButton
-                                    color="success"
                                     size="small"
                                     onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
                                     disabled={!isPending}
-                                    sx={{
-                                        bgcolor: 'rgba(74, 222, 128, 0.1)',
-                                        '&.Mui-disabled': { bgcolor: 'transparent' },
-                                        '&:hover': { bgcolor: 'rgba(74, 222, 128, 0.2)' }
-                                    }}
+                                    className="btn-action btn-approve"
+                                    sx={{ color: "#15803d" }}
                                 >
                                     <ApproveIcon fontSize="small" />
                                 </IconButton>
@@ -266,15 +262,11 @@ const VisitorList: React.FC = () => {
                         <Tooltip title="Reject">
                             <span>
                                 <IconButton
-                                    color="error"
                                     size="small"
                                     onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
                                     disabled={!isPending}
-                                    sx={{
-                                        bgcolor: 'rgba(248, 113, 113, 0.1)',
-                                        '&.Mui-disabled': { bgcolor: 'transparent' },
-                                        '&:hover': { bgcolor: 'rgba(248, 113, 113, 0.2)' }
-                                    }}
+                                    className="btn-action btn-reject"
+                                    sx={{ color: "#b91c1c" }}
                                 >
                                     <RejectIcon fontSize="small" />
                                 </IconButton>
@@ -282,10 +274,9 @@ const VisitorList: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="Edit">
                             <IconButton
-                                color="primary"
                                 size="small"
                                 onClick={() => handleEditClick(visitor)}
-                                sx={{ bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' } }}
+                                className="btn-action btn-edit"
                             >
                                 <EditIcon fontSize="small" />
                             </IconButton>
@@ -294,7 +285,7 @@ const VisitorList: React.FC = () => {
                             <IconButton
                                 size="small"
                                 onClick={() => handleDelete(visitor.id)}
-                                sx={{ color: '#94a3b8', bgcolor: '#f1f5f9', '&:hover': { bgcolor: '#e2e8f0', color: '#ef4444' } }}
+                                className="btn-action btn-delete"
                             >
                                 <DeleteIcon fontSize="small" />
                             </IconButton>

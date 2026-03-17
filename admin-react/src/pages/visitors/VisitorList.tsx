@@ -374,6 +374,7 @@ const VisitorList: React.FC = () => {
                         <Loader />
                     </Box>
                 )}
+
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
@@ -428,6 +429,7 @@ const VisitorList: React.FC = () => {
                         )}
                     </TableBody>
                 </Table>
+
                 <TablePagination
                     rowsPerPageOptions={[10, 25, 50]}
                     component="div"

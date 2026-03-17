@@ -21,6 +21,7 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
   VisitorBloc(this.apiService) : super(VisitorInitial()) {
     on<FetchVisitors>(_fetchVisitors);
     on<LoadMoreVisitors>(_loadMoreVisitors);
+    on<CreateVisitor>(_createVisitor);
   }
 
   /// First Load
@@ -89,5 +90,33 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
     }
 
     isLoadingMore = false;
+  }
+
+  /// Create Visitor
+  Future<void> _createVisitor(
+    CreateVisitor event,
+    Emitter<VisitorState> emit,
+  ) async {
+    try {
+      final response = await apiService.post(
+        AppConstants.visitorsEndpoint,
+        event.data,
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+
+        if (json["success"] == true) {
+          /// refresh list
+          add(FetchVisitors());
+        } else {
+          emit(VisitorError("Failed to create visitor"));
+        }
+      } else {
+        emit(VisitorError("Visitor creation failed"));
+      }
+    } catch (e) {
+      emit(VisitorError(e.toString()));
+    }
   }
 }

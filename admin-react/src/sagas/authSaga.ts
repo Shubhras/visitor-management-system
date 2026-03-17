@@ -25,7 +25,12 @@ function* loginSaga(action: PayloadAction<LoginPayload>) {
         const data = response.data;
 
         if (data.success) {
-            yield put(loginSuccess(data));
+            // Role based access control - only allow admin role
+            if (data.user.role === 'admin') {
+                yield put(loginSuccess(data));
+            } else {
+                yield put(loginFailure('Access denied. Only administrators can login to this panel.'));
+            }
         } else {
             yield put(loginFailure(data.message));
         }

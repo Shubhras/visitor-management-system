@@ -25,13 +25,14 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import type { Visitor } from '../../features/visitor/visitorTypes';
 
 const visitorSchema = z.object({
-    name: z.string().min(3, 'Name must be at least 3 characters').max(50, 'Name cannot exceed 50 characters'),
+    name: z.string().min(1, { message: 'Name is required' }).min(3, { message: 'Name must be at least 3 characters' }).max(50, { message: 'Name cannot exceed 50 characters' }),
     phone: z.string()
-        .min(10, 'Phone must be at least 10 digits')
-        .max(10, 'Phone must be exactly 10 digits')
-        .regex(/^\d+$/, 'Phone must contain only numbers'),
-    unitNumber: z.string().min(3, 'Unit number must be at least 3 characters').max(50, 'Unit number cannot exceed 50 characters'),
-    visitDate: z.string().min(1, 'Visit date is required'),
+        .min(1, { message: 'Phone number is required' })
+        .min(10, { message: 'Phone must be exactly 10 digits' })
+        .max(10, { message: 'Phone must be exactly 10 digits' })
+        .regex(/^[6-9]\d{9}$/, { message: 'Enter a valid 10-digit mobile number' }),
+    unitNumber: z.string().min(1, { message: 'Unit number is required' }).min(3, { message: 'Unit number must be at least 3 characters' }).max(50, { message: 'Unit number cannot exceed 50 characters' }),
+    visitDate: z.string().min(1, { message: 'Visit date is required' }),
 });
 
 type VisitorFormValues = z.infer<typeof visitorSchema>;

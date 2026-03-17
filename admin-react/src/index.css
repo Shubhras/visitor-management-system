@@ -136,16 +136,24 @@ body {
     transition: all 0.2s ease;
   }
 
+  /* Default Border */
   .custom-textfield .MuiOutlinedInput-root fieldset {
-    border-color: #e2e8f0 !important;
+    border-color: #e2e8f0;
   }
 
+  /* Hover Border */
   .custom-textfield .MuiOutlinedInput-root:hover fieldset {
-    border-color: #cbd5e1 !important;
+    border-color: #cbd5e1;
   }
 
+  /* Focus Border - Theme Purple (#6001D3) */
   .custom-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
-    border-color: #6366f1 !important;
+    border-color: #6001D3 !important;
+  }
+
+  /* Error Border - Red */
+  .custom-textfield .MuiOutlinedInput-root.Mui-error fieldset {
+    border-color: #ef4444 !important;
   }
 
   .btn-cancel {

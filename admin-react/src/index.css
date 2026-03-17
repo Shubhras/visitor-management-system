@@ -55,6 +55,51 @@ body {
   }
 }
 
+/* Action Button Styles - Refined with RGBA Colors */
+.MuiIconButton-root.btn-action {
+  transition: all 0.2s ease;
+}
+
+.MuiIconButton-root.btn-approve {
+  background-color: rgba(22, 163, 74, 0.1);
+}
+
+.MuiIconButton-root.btn-approve:hover:not(:disabled) {
+  background-color: rgba(22, 163, 74, 0.2);
+}
+
+.MuiIconButton-root.btn-reject {
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+.MuiIconButton-root.btn-reject:hover:not(:disabled) {
+  background-color: rgba(220, 38, 38, 0.2);
+}
+
+.MuiIconButton-root.btn-edit {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.MuiIconButton-root.btn-edit:hover {
+  background-color: #dbeafe;
+}
+
+.MuiIconButton-root.btn-delete {
+  background-color: #f8fafc;
+  color: #475569;
+}
+
+.MuiIconButton-root.btn-delete:hover {
+  background-color: #f1f5f9;
+}
+
+.MuiIconButton-root.btn-action:disabled {
+  background-color: transparent;
+  color: #94a3b8;
+  opacity: 0.5;
+}
+
 @media (min-width: 601px) and (max-width: 1024px) {
   .table-responsive-container {
     max-width: 95%;

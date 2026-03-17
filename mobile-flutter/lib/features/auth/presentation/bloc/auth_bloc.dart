@@ -25,24 +25,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         "password": event.password.trim(),
       });
 
+      final data = jsonDecode(response.body);
+
+      /// ✅ Handle success + failure from same 200 response
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        if (data["success"] == true) {
+          final loginResponse = LoginResponseModel.fromJson(data);
 
-        final loginResponse = LoginResponseModel.fromJson(data);
-
-        /// Check API success flag
-        if (loginResponse.success) {
           await TokenStorage.saveToken(loginResponse.accessToken);
 
           emit(AuthSuccess());
         } else {
-          emit(AuthFailure("Invalid credentials"));
+          emit(AuthFailure(data["message"] ?? "Login failed"));
         }
       } else {
-        emit(AuthFailure("Login failed (${response.statusCode})"));
+        emit(AuthFailure("Server error (${response.statusCode})"));
       }
     } catch (e) {
-      emit(AuthFailure(e.toString()));
+      emit(AuthFailure("Something went wrong"));
     }
   }
 

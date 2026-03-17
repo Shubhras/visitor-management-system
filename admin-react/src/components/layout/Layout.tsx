@@ -65,6 +65,7 @@ const Layout: React.FC = () => {
                         duration: theme.transitions.duration.leavingScreen,
                     }),
                     mt: 8,
+                    overflowX: 'hidden',
                 }}
             >
                 <Outlet />

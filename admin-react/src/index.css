@@ -6,12 +6,15 @@
   font-weight: 400;
 }
 
+html,
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   background-color: #f4f7fe;
   color: #1b2559;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 * {
@@ -35,4 +38,31 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Responsive Table Container Class */
+.table-responsive-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .table-responsive-container {
+    max-width: calc(100vw - 48px);
+  }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .table-responsive-container {
+    max-width: 95%;
+  }
+}
+
+@media (min-width: 1025px) {
+  .table-responsive-container {
+    max-width: 100%;
+  }
 }

@@ -301,7 +301,7 @@ const VisitorList: React.FC = () => {
     ];
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
             <Typography variant="h4" sx={{ mb: 4 }}>
                 Visitor Management
             </Typography>
@@ -360,87 +360,90 @@ const VisitorList: React.FC = () => {
             </Stack>
 
             {/* Config-driven Table Section */}
-            <StyledTableContainer component={Paper}>
-                {loading && (
-                    <Box sx={{
-                        position: 'absolute',
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        bgcolor: 'rgba(255,255,255,0.7)',
-                        zIndex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <Loader />
-                    </Box>
-                )}
+            <Box className="table-responsive-container">
+                <StyledTableContainer component={Paper} sx={{ display: 'flex', flexDirection: 'column' }}>
+                    {loading && (
+                        <Box sx={{
+                            position: 'absolute',
+                            top: 0, left: 0, right: 0, bottom: 0,
+                            bgcolor: 'rgba(255,255,255,0.7)',
+                            zIndex: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Loader />
+                        </Box>
+                    )}
 
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <StyledHeaderCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.sortable ? (
-                                        <TableSortLabel
-                                            active={params.sortBy === column.id}
-                                            direction={params.sortBy === column.id ? params.sortOrder : 'asc'}
-                                            onClick={() => handleSort(column.id)}
-                                        >
-                                            {column.label}
-                                        </TableSortLabel>
-                                    ) : (
-                                        column.label
-                                    )}
-                                </StyledHeaderCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {list.map((visitor, index) => (
-                            <StyledTableRow key={visitor.id} hover>
-                                {columns.map((column) => (
-                                    <TableCell key={column.id} align={column.align}>
-                                        {column.render
-                                            ? column.render(visitor, index)
-                                            : visitor[column.id as keyof Visitor]
-                                        }
-                                    </TableCell>
-                                ))}
-                            </StyledTableRow>
-                        ))}
-                        {list.length === 0 && !loading && (
+
+                    <Table stickyHeader>
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={columns.length} align="center" sx={{ py: 10 }}>
-                                    <Box sx={{ opacity: 0.5, textAlign: 'center' }}>
-                                        <PeopleIcon sx={{ fontSize: 60, mb: 1, color: 'text.secondary' }} />
-                                        <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                            No visitors found
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Try adjusting your search or filters
-                                        </Typography>
-                                    </Box>
-                                </TableCell>
+                                {columns.map((column) => (
+                                    <StyledHeaderCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                    >
+                                        {column.sortable ? (
+                                            <TableSortLabel
+                                                active={params.sortBy === column.id}
+                                                direction={params.sortBy === column.id ? params.sortOrder : 'asc'}
+                                                onClick={() => handleSort(column.id)}
+                                            >
+                                                {column.label}
+                                            </TableSortLabel>
+                                        ) : (
+                                            column.label
+                                        )}
+                                    </StyledHeaderCell>
+                                ))}
                             </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {list.map((visitor, index) => (
+                                <StyledTableRow key={visitor.id} hover>
+                                    {columns.map((column) => (
+                                        <TableCell key={column.id} align={column.align}>
+                                            {column.render
+                                                ? column.render(visitor, index)
+                                                : visitor[column.id as keyof Visitor]
+                                            }
+                                        </TableCell>
+                                    ))}
+                                </StyledTableRow>
+                            ))}
+                            {list.length === 0 && !loading && (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} align="center" sx={{ py: 10 }}>
+                                        <Box sx={{ opacity: 0.5, textAlign: 'center' }}>
+                                            <PeopleIcon sx={{ fontSize: 60, mb: 1, color: 'text.secondary' }} />
+                                            <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                No visitors found
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Try adjusting your search or filters
+                                            </Typography>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
 
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 50]}
-                    component="div"
-                    count={total}
-                    rowsPerPage={params.limit}
-                    page={params.page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    sx={{ borderTop: `1px solid ${theme.palette.divider}` }}
-                />
-            </StyledTableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 50]}
+                        component="div"
+                        count={total}
+                        rowsPerPage={params.limit}
+                        page={params.page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{ borderTop: `1px solid ${theme.palette.divider}` }}
+                    />
+                </StyledTableContainer>
+            </Box>
             {/* Add/Edit Popup */}
             <AddEditVisitor
                 open={modalVisitorOpen}

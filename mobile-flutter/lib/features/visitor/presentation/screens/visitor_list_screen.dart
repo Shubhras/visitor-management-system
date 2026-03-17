@@ -5,6 +5,7 @@ import 'package:visitor_management/core/constants/dimensions.dart';
 import 'package:visitor_management/features/visitor/presentation/bloc/visitor_bloc.dart';
 import 'package:visitor_management/features/visitor/presentation/bloc/visitor_event.dart';
 import 'package:visitor_management/features/visitor/presentation/bloc/visitor_state.dart';
+import 'package:visitor_management/features/visitor/presentation/screens/create_visitor_screen.dart';
 import 'package:visitor_management/shared/widgets/app_bar_widget.dart';
 import 'package:visitor_management/shared/widgets/error_widget.dart';
 import 'package:visitor_management/shared/widgets/shimmer_loading.dart';
@@ -53,7 +54,10 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
         backgroundColor: AppColors.primary,
 
         onPressed: () {
-          print("Visitor Create Screen");
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CreateVisitorScreen()),
+          );
         },
 
         child: const Icon(Icons.add, color: AppColors.textLight),

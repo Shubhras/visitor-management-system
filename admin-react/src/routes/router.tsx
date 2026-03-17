@@ -5,23 +5,11 @@ import MainLayout from '../components/layout/Layout';
 import ProtectedRoute from './ProtectedRoute';
 import ErrorPage from '../pages/error/ErrorPage';
 import VisitorList from '../pages/visitors/VisitorList';
-import ForgotPassword from '../pages/auth/ForgotPassword';
-import ResetPassword from '../pages/auth/ResetPassword';
 
 export const router = createBrowserRouter([
     {
         path: '/login',
         element: <Login />,
-        errorElement: <ErrorPage />,
-    },
-    {
-        path: '/forgot-password',
-        element: <ForgotPassword />,
-        errorElement: <ErrorPage />,
-    },
-    {
-        path: '/reset-password',
-        element: <ResetPassword />,
         errorElement: <ErrorPage />,
     },
     {

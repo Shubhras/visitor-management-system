@@ -7,7 +7,6 @@ import {
     Paper,
     CircularProgress,
     useTheme,
-    Link,
     IconButton,
     InputAdornment,
 } from '@mui/material';
@@ -15,7 +14,7 @@ import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { loginRequest } from '../../features/auth/authSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
@@ -23,7 +22,7 @@ import loginBg from '../../assets/login-bg.png';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
-    email: z.string().email('Invalid email address'),
+    email: z.email('Invalid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -124,12 +123,43 @@ const Login: React.FC = () => {
                                 color: theme.palette.text.primary,
                                 letterSpacing: '-1.5px',
                                 display: 'flex',
-                                alignItems: 'baseline',
+                                alignItems: 'center',
                             }}
                         >
-                            iPlus
-                            <Box component="span" sx={{ color: '#2ecc71', ml: 1, fontSize: '0.8em' }}>
-                                living
+                            Genio
+                            <Box
+                                component="span"
+                                sx={{
+                                    position: 'relative',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    ml: 1.5,
+                                    width: '64px',
+                                    height: '64px',
+                                    borderRadius: '50%',
+                                    '&::before, &::after': {
+                                        content: '""',
+                                        position: 'absolute',
+                                        inset: 0,
+                                        borderRadius: '50%',
+                                        border: '4px solid transparent',
+                                        background: 'linear-gradient(180deg, #e9d5ff 0%, #9333ea 100%) border-box',
+                                        WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+                                        WebkitMaskComposite: 'destination-out',
+                                        maskComposite: 'exclude',
+                                    },
+                                    '&::before': {
+                                        clipPath: 'polygon(0 0, 100% 0, 100% 42%, 0 42%)',
+                                    },
+                                    '&::after': {
+                                        clipPath: 'polygon(0 58%, 100% 58%, 100% 100%, 0 100%)',
+                                    }
+                                }}
+                            >
+                                <Box component="span" sx={{ fontSize: '0.6em', color: '#7c4dff', fontWeight: 900 }}>
+                                    360
+                                </Box>
                             </Box>
                         </Typography>
                     </Box>
@@ -153,7 +183,7 @@ const Login: React.FC = () => {
                                 fontWeight: 800,
                                 color: theme.palette.text.primary,
                                 mb: 1.5,
-                                fontSize: { xs: '2rem', md: '2.5rem' }
+                                fontSize: { xs: '1.5rem', md: '2rem' }
                             }}
                         >
                             Welcome Back!!
@@ -162,9 +192,6 @@ const Login: React.FC = () => {
                             To keep connected with us please login with your personal info
                         </Typography>
                     </Box>
-
-
-
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Box sx={{ mb: 3 }}>
                             <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
@@ -193,7 +220,6 @@ const Login: React.FC = () => {
                                 }}
                             />
                         </Box>
-
                         <Box sx={{ mb: 4 }}>
                             <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
                                 Password <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
@@ -233,23 +259,7 @@ const Login: React.FC = () => {
                                     }
                                 }}
                             />
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                                <Link
-                                    component={RouterLink}
-                                    to="/forgot-password"
-                                    sx={{
-                                        color: theme.palette.primary.main,
-                                        fontWeight: 700,
-                                        textDecoration: 'none',
-                                        fontSize: '0.875rem',
-                                        '&:hover': { textDecoration: 'underline' }
-                                    }}
-                                >
-                                    Forgot Password?
-                                </Link>
-                            </Box>
                         </Box>
-
                         <Button
                             type="submit"
                             variant="contained"
@@ -279,4 +289,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-

@@ -14,7 +14,7 @@ const Dashboard: React.FC = () => {
                     mt: 4,
                     p: 6,
                     border: '1px dashed #ddd',
-                    borderRadius: 2,
+                    borderRadius: 1,
                     textAlign: 'center',
                     bgcolor: '#fafafa'
                 }}

@@ -55,6 +55,51 @@ body {
   }
 }
 
+/* Action Button Styles - Refined with RGBA Colors */
+.MuiIconButton-root.btn-action {
+  transition: all 0.2s ease;
+}
+
+.MuiIconButton-root.btn-approve {
+  background-color: rgba(22, 163, 74, 0.1);
+}
+
+.MuiIconButton-root.btn-approve:hover:not(:disabled) {
+  background-color: rgba(22, 163, 74, 0.2);
+}
+
+.MuiIconButton-root.btn-reject {
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+.MuiIconButton-root.btn-reject:hover:not(:disabled) {
+  background-color: rgba(220, 38, 38, 0.2);
+}
+
+.MuiIconButton-root.btn-edit {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.MuiIconButton-root.btn-edit:hover {
+  background-color: #dbeafe;
+}
+
+.MuiIconButton-root.btn-delete {
+  background-color: #f8fafc;
+  color: #475569;
+}
+
+.MuiIconButton-root.btn-delete:hover {
+  background-color: #f1f5f9;
+}
+
+.MuiIconButton-root.btn-action:disabled {
+  background-color: transparent;
+  color: #94a3b8;
+  opacity: 0.5;
+}
+
 @media (min-width: 601px) and (max-width: 1024px) {
   .table-responsive-container {
     max-width: 95%;
@@ -64,5 +109,80 @@ body {
 @media (min-width: 1025px) {
   .table-responsive-container {
     max-width: 100%;
+  }
+
+  /* Visitor Dialog & Form Styles */
+  .visitor-dialog-paper {
+    border-radius: 24px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  .form-field-label {
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 8px !important;
+    display: block;
+  }
+
+  .form-field-label span {
+    color: #ef4444 !important;
+  }
+
+  .custom-textfield .MuiOutlinedInput-root {
+    border-radius: 12px !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease;
+  }
+
+  /* Default Border */
+  .custom-textfield .MuiOutlinedInput-root fieldset {
+    border-color: #e2e8f0;
+  }
+
+  /* Hover Border */
+  .custom-textfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: #cbd5e1;
+  }
+
+  /* Focus Border - Theme Purple (#6001D3) */
+  .custom-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #6001D3 !important;
+  }
+
+  /* Error Border - Red */
+  .custom-textfield .MuiOutlinedInput-root.Mui-error fieldset {
+    border-color: #ef4444 !important;
+  }
+
+  .btn-cancel {
+    border-radius: 12px !important;
+    border-color: #e2e8f0 !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+    height: 48px !important;
+    text-transform: none !important;
+  }
+
+  .btn-cancel:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  .btn-submit {
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    height: 48px !important;
+    text-transform: none !important;
+    background-color: #6001D3 !important;
+    box-shadow: 0 10px 15px -3px rgba(96, 1, 211, 0.3) !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .btn-submit:hover {
+    background-color: #4c01a8 !important;
+    box-shadow: 0 20px 25px -5px rgba(96, 1, 211, 0.4) !important;
+    transform: translateY(-1px);
   }
 }

@@ -10,7 +10,6 @@ import {
     DialogContent,
     DialogActions,
     IconButton,
-    useTheme,
     InputAdornment
 } from '@mui/material';
 import { Close as CloseIcon, Person, Phone, Home, Event } from '@mui/icons-material';
@@ -26,13 +25,14 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import type { Visitor } from '../../features/visitor/visitorTypes';
 
 const visitorSchema = z.object({
-    name: z.string().min(3, 'Name must be at least 3 characters').max(50, 'Name cannot exceed 50 characters'),
+    name: z.string().min(1, { message: 'Name is required' }).min(3, { message: 'Name must be at least 3 characters' }).max(50, { message: 'Name cannot exceed 50 characters' }),
     phone: z.string()
-        .min(10, 'Phone must be at least 10 digits')
-        .max(10, 'Phone must be exactly 10 digits')
-        .regex(/^\d+$/, 'Phone must contain only numbers'),
-    unitNumber: z.string().min(3, 'Unit number must be at least 3 characters').max(50, 'Unit number cannot exceed 50 characters'),
-    visitDate: z.string().min(1, 'Visit date is required'),
+        .min(1, { message: 'Phone number is required' })
+        .min(10, { message: 'Phone must be exactly 10 digits' })
+        .max(10, { message: 'Phone must be exactly 10 digits' })
+        .regex(/^[6-9]\d{9}$/, { message: 'Enter a valid 10-digit mobile number' }),
+    unitNumber: z.string().min(1, { message: 'Unit number is required' }).min(3, { message: 'Unit number must be at least 3 characters' }).max(50, { message: 'Unit number cannot exceed 50 characters' }),
+    visitDate: z.string().min(1, { message: 'Visit date is required' }),
 });
 
 type VisitorFormValues = z.infer<typeof visitorSchema>;
@@ -44,7 +44,6 @@ interface AddEditVisitorProps {
 }
 
 const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor }) => {
-    const theme = useTheme();
     const dispatch = useAppDispatch();
     const { loading, error, success } = useAppSelector((state) => state.visitor);
 
@@ -120,12 +119,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
             fullWidth
             slotProps={{
                 paper: {
-                    sx: {
-                        borderRadius: '24px',
-                        p: 0,
-                        overflow: 'hidden',
-                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-                    }
+                    className: 'visitor-dialog-paper'
                 }
             }}
         >
@@ -140,7 +134,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                 <Typography variant="h5" component="span" sx={{ fontWeight: 800, color: '#1e293b' }}>
                     {isEditMode ? 'Edit Visitor' : 'Add New Visitor'}
                 </Typography>
-                <IconButton onClick={onClose} size="small" sx={{ color: '#94a3b8' }}>
+                <IconButton onClick={onClose} size="small" className="btn-action">
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
@@ -150,8 +144,8 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                     <form id="visitor-form" onSubmit={handleSubmit(onSubmit)}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
                             <Box>
-                                <Typography variant="body2" sx={{ mb: 0.8, fontWeight: 700, color: '#1e293b' }}>
-                                    Visitor Name <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                <Typography variant="body2" className="form-field-label">
+                                    Visitor Name <span>*</span>
                                 </Typography>
                                 <TextField
                                     {...register('name')}
@@ -159,6 +153,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                     fullWidth
                                     error={!!errors.name}
                                     helperText={errors.name?.message}
+                                    className="custom-textfield"
                                     slotProps={{
                                         input: {
                                             startAdornment: (
@@ -168,21 +163,12 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                             ),
                                         },
                                     }}
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: '12px',
-                                            backgroundColor: '#fff',
-                                            '& fieldset': { borderColor: '#e2e8f0' },
-                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
-                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
-                                        }
-                                    }}
                                 />
                             </Box>
 
                             <Box>
-                                <Typography variant="body2" sx={{ mb: 1, fontWeight: 700, color: theme.palette.text.primary }}>
-                                    Phone Number <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                <Typography variant="body2" className="form-field-label">
+                                    Phone Number <span>*</span>
                                 </Typography>
                                 <TextField
                                     {...register('phone')}
@@ -190,6 +176,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                     fullWidth
                                     error={!!errors.phone}
                                     helperText={errors.phone?.message}
+                                    className="custom-textfield"
                                     onChange={(e) => {
                                         const value = e.target.value.replaceAll(/\D/g, '');
                                         e.target.value = value.slice(0, 10);
@@ -204,20 +191,11 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                             ),
                                         },
                                     }}
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: '12px',
-                                            backgroundColor: '#fff',
-                                            '& fieldset': { borderColor: '#e2e8f0' },
-                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
-                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
-                                        }
-                                    }}
                                 />
                             </Box>
                             <Box>
-                                <Typography variant="body2" sx={{ mb: 0.8, fontWeight: 700, color: '#1e293b' }}>
-                                    Unit Number <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                <Typography variant="body2" className="form-field-label">
+                                    Unit Number <span>*</span>
                                 </Typography>
                                 <TextField
                                     {...register('unitNumber')}
@@ -225,6 +203,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                     fullWidth
                                     error={!!errors.unitNumber}
                                     helperText={errors.unitNumber?.message}
+                                    className="custom-textfield"
                                     slotProps={{
                                         input: {
                                             startAdornment: (
@@ -234,20 +213,11 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                             ),
                                         },
                                     }}
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: '12px',
-                                            backgroundColor: '#fff',
-                                            '& fieldset': { borderColor: '#e2e8f0' },
-                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
-                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
-                                        }
-                                    }}
                                 />
                             </Box>
                             <Box>
-                                <Typography variant="body2" sx={{ mb: 0.8, fontWeight: 700, color: '#1e293b' }}>
-                                    Visit Date <Box component="span" sx={{ color: '#ef4444' }}>*</Box>
+                                <Typography variant="body2" className="form-field-label">
+                                    Visit Date <span>*</span>
                                 </Typography>
                                 <Controller
                                     name="visitDate"
@@ -265,27 +235,16 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                                                     error: !!errors.visitDate,
                                                     helperText: errors.visitDate?.message,
                                                     placeholder: "Select Date",
+                                                    className: "custom-textfield",
                                                     slotProps: {
                                                         input: {
                                                             startAdornment: (
                                                                 <InputAdornment position="start" sx={{ mr: 1 }}>
-                                                                    <Event sx={{ color: theme.palette.text.secondary, fontSize: '1.2rem' }} />
+                                                                    <Event sx={{ color: '#94a3b8', fontSize: '1.2rem' }} />
                                                                 </InputAdornment>
                                                             ),
                                                         },
                                                     },
-                                                    sx: {
-                                                        '& .MuiOutlinedInput-root': {
-                                                            borderRadius: '12px',
-                                                            backgroundColor: '#fff',
-                                                            '& fieldset': { borderColor: '#e2e8f0' },
-                                                            '&:hover fieldset': { borderColor: '#cbd5e1' },
-                                                            '&.Mui-focused fieldset': { borderColor: '#6366f1' },
-                                                        },
-                                                        '& .MuiInputAdornment-root': {
-                                                            color: '#94a3b8'
-                                                        }
-                                                    }
                                                 }
                                             }}
                                         />
@@ -303,20 +262,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                     color="inherit"
                     onClick={onClose}
                     disabled={loading}
-                    sx={{
-                        px: 4,
-                        textTransform: 'none',
-                        borderRadius: '12px',
-                        borderColor: '#e2e8f0',
-                        color: '#64748b',
-                        fontWeight: 600,
-                        height: 48,
-                        flex: 1,
-                        '&:hover': {
-                            backgroundColor: '#f8fafc',
-                            borderColor: '#cbd5e1'
-                        }
-                    }}
+                    className="btn-cancel"
                 >
                     Cancel
                 </Button>
@@ -325,21 +271,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
                     form="visitor-form"
                     variant="contained"
                     disabled={loading}
-                    sx={{
-                        px: 4,
-                        borderRadius: '12px',
-                        fontWeight: 700,
-                        flex: 2,
-                        height: 48,
-                        textTransform: 'none',
-                        backgroundColor: '#6001D3',
-                        boxShadow: '0 10px 15px -3px rgba(96, 1, 211, 0.3)',
-                        '&:hover': {
-                            backgroundColor: '#4c01a8',
-                            boxShadow: '0 20px 25px -5px rgba(96, 1, 211, 0.4)',
-                            transform: 'translateY(-1px)'
-                        }
-                    }}
+                    className="btn-submit"
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : (isEditMode ? 'Update' : 'Submit')}
                 </Button>

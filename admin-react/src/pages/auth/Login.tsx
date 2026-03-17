@@ -22,8 +22,8 @@ import loginBg from '../../assets/login-bg.png';
 import toast from 'react-hot-toast';
 
 const loginSchema = z.object({
-    email: z.email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email address' }),
+    password: z.string().min(1, { message: 'Password is required' }).min(6, { message: 'Password must be at least 6 characters' }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -43,6 +43,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
+            toast.success('Login successful!');
             navigate('/dashboard');
         }
     }, [isAuthenticated, navigate]);

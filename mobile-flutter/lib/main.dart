@@ -4,8 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load .env file BEFORE runApp
-  await dotenv.load(fileName: ".env");
+  const env = String.fromEnvironment('ENV', defaultValue: 'dev');
+
+  await dotenv.load(fileName: ".env.$env");
 
   runApp(const MyApp());
 }
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Example: access BASE_URL anywhere in the app
+
     final baseUrl = dotenv.env['BASE_URL'] ?? 'http://fallback-url.com';
 
     print('BASE_URL from .env → $baseUrl'); // For debugging
@@ -34,7 +36,10 @@ class MyApp extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 "API Base URL: $baseUrl",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),

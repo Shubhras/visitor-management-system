@@ -12,7 +12,12 @@ export const StyledTableContainer = styled(TableContainer)<TableContainerProps>(
     border: `1px solid ${theme.palette.divider}`,
     boxShadow: '0px 20px 25px -5px rgba(0, 0, 0, 0.02), 0px 10px 10px -5px rgba(0, 0, 0, 0.01)',
     maxHeight: 'calc(100vh - 280px)',
-    overflow: 'auto',
+
+    overflowX: 'auto',
+    overflowY: 'auto',
+
+    WebkitOverflowScrolling: 'touch',
+
     '& .MuiTable-root': {
         minWidth: 800,
     },

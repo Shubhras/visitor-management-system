@@ -46,7 +46,9 @@ class Validators {
     if (value == null || value.trim().isEmpty) {
       return "Unit number is required";
     }
-
+    if (value.trim().length < 3) {
+      return "Minimum 3 characters required";
+    }
     if (value.trim().length > 10) {
       return "Maximum 10 characters allowed";
     }

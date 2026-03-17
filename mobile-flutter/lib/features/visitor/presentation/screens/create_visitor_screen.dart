@@ -6,6 +6,7 @@ import 'package:visitor_management/core/constants/app_colors.dart';
 import 'package:visitor_management/core/constants/dimensions.dart';
 import 'package:visitor_management/core/utils/validators.dart';
 import 'package:visitor_management/features/visitor/presentation/bloc/visitor_bloc.dart';
+import 'package:visitor_management/features/visitor/presentation/bloc/visitor_event.dart';
 import 'package:visitor_management/features/visitor/presentation/bloc/visitor_state.dart';
 import 'package:visitor_management/shared/widgets/custom_button.dart';
 import 'package:visitor_management/shared/widgets/custom_date_field.dart';
@@ -74,8 +75,29 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
   }
 
   void submitVisitor() {
-    print("Sussfully Created");
+    setState(() {
+      isSubmitted = true;
+    });
 
+    if (!_formKey.currentState!.validate()) return;
+
+    if (visitDate == null) {
+      setState(() => dateError = true);
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    context.read<VisitorBloc>().add(
+      CreateVisitor({
+        "name": nameController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "unitNumber": unitController.text.trim(),
+        "visitDate": DateFormat('yyyy-MM-dd').format(visitDate!),
+      }),
+    );
   }
 
   @override

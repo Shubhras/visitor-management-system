@@ -26,14 +26,19 @@ import type { Visitor } from '../../features/visitor/visitorTypes';
 
 // Zod validation schema for visitor form data
 const visitorSchema = z.object({
-    name: z.string().min(1, { message: 'Name is required' }).min(3, { message: 'Name must be at least 3 characters' }).max(50, { message: 'Name cannot exceed 50 characters' }),
+    name: z.string()
+        .min(1, { error: 'Name is required' })
+        .min(3, { error: 'Name must be at least 3 characters' })
+        .max(50, { error: 'Name cannot exceed 50 characters' }),
     phone: z.string()
-        .min(1, { message: 'Phone number is required' })
-        .min(10, { message: 'Phone must be exactly 10 digits' })
-        .max(10, { message: 'Phone must be exactly 10 digits' })
-        .regex(/^[6-9]\d{9}$/, { message: 'Enter a valid 10-digit mobile number' }),
-    unitNumber: z.string().min(1, { message: 'Unit number is required' }).min(3, { message: 'Unit number must be at least 3 characters' }).max(50, { message: 'Unit number cannot exceed 50 characters' }),
-    visitDate: z.string().min(1, { message: 'Visit date is required' }),
+        .min(1, { error: 'Phone number is required' })
+        .min(10, { error: 'Phone must be exactly 10 digits' })
+        .max(10, { error: 'Phone must be exactly 10 digits' }),
+    unitNumber: z.string()
+        .min(1, { error: 'Unit number is required' })
+        .min(3, { error: 'Unit number must be at least 3 characters' })
+        .max(50, { error: 'Unit number cannot exceed 50 characters' }),
+    visitDate: z.string().min(1, { error: 'Visit date is required' }),
 });
 
 type VisitorFormValues = z.infer<typeof visitorSchema>;

@@ -57,7 +57,7 @@ const Login: React.FC = () => {
     useEffect(() => {
         if (isAuthenticated) {
             toast.success('Login successful!');
-            navigate('/dashboard');
+            navigate('/visitors');
         }
     }, [isAuthenticated, navigate]);
 

@@ -20,11 +20,12 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
 
   VisitorBloc(this.apiService) : super(VisitorInitial()) {
     on<FetchVisitors>(_fetchVisitors);
+    on<RefreshVisitors>(_refreshVisitors);
     on<LoadMoreVisitors>(_loadMoreVisitors);
     on<CreateVisitor>(_createVisitor);
   }
 
-  /// First Load
+  /// FIRST LOAD → SHOW SHIMMER
   Future<void> _fetchVisitors(
     FetchVisitors event,
     Emitter<VisitorState> emit,
@@ -56,7 +57,37 @@ class VisitorBloc extends Bloc<VisitorEvent, VisitorState> {
     }
   }
 
-  /// Pagination
+  /// REFRESH → NO SHIMMER
+  Future<void> _refreshVisitors(
+    RefreshVisitors event,
+    Emitter<VisitorState> emit,
+  ) async {
+    try {
+      page = 1;
+
+      final response = await apiService.get(
+        "${AppConstants.visitorsEndpoint}?page=$page&limit=$limit",
+      );
+
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+
+        final List data = json["data"];
+
+        visitors = data.map((e) => VisitorModel.fromJson(e)).toList();
+
+        hasNextPage = json["pagination"]["hasNextPage"];
+
+        emit(VisitorLoaded(visitors)); // ❗ no loading state
+      } else {
+        emit(VisitorError("Failed to refresh visitors"));
+      }
+    } catch (e) {
+      emit(VisitorError(e.toString()));
+    }
+  }
+
+  /// PAGINATION
   Future<void> _loadMoreVisitors(
     LoadMoreVisitors event,
     Emitter<VisitorState> emit,

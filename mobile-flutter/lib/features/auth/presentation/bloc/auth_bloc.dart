@@ -27,17 +27,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final data = jsonDecode(response.body);
 
-      /// ✅ Handle success + failure from same 200 response
       if (response.statusCode == 200) {
-        if (data["success"] == true) {
-          final loginResponse = LoginResponseModel.fromJson(data);
+        final loginResponse = LoginResponseModel.fromJson(data);
 
-          await TokenStorage.saveToken(loginResponse.accessToken);
-
-          emit(AuthSuccess());
-        } else {
+        if (!loginResponse.success) {
           emit(AuthFailure(data["message"] ?? "Login failed"));
+          return;
         }
+
+        /// Role check
+        if (!loginResponse.isResident) {
+          emit(AuthFailure("Access denied: Only residents can login"));
+          return;
+        }
+
+        /// Save token
+        await TokenStorage.saveToken(loginResponse.accessToken);
+
+        emit(AuthSuccess());
       } else {
         emit(AuthFailure("Server error (${response.statusCode})"));
       }

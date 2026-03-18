@@ -11,6 +11,10 @@ import 'package:visitor_management/features/auth/presentation/bloc/auth_state.da
 import 'package:visitor_management/shared/widgets/custom_button.dart';
 import 'package:visitor_management/shared/widgets/custom_text_field.dart';
 
+/// Login Screen
+/// Handles user authentication using email & password
+/// Uses Bloc for state management
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -19,14 +23,20 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  /// Form key for validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  /// Controllers for input fields
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  /// Password visibility toggle
   bool obscurePassword = true;
+
+  /// Tracks form validity (used to enable/disable button)
   bool isFormValid = false;
 
+  /// Validate form on input change
   void checkForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
 
@@ -40,11 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
 
+      /// Tap anywhere to dismiss keyboard
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
 
+        /// Listen to AuthBloc state changes (Success / Failure)
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
+            /// On successful login → Navigate to main screen
             if (state is AuthSuccess) {
               Navigator.pushReplacement(
                 context,
@@ -52,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             }
 
+            /// On login failure → Show error message
             if (state is AuthFailure) {
               ScaffoldMessenger.of(
                 context,
@@ -69,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   child: Column(
                     children: [
-                      /// APP LOGO
+                      /// App Logo
                       SizedBox(
                         height: 150,
                         child: Image.asset(
@@ -79,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
 
-                      /// TITLE
+                      /// Title
                       Text(
                         "Let's Sign In",
                         style: TextStyle(
@@ -91,6 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 6),
 
+                      /// Subtitle
                       Text(
                         "Visitor management system access",
                         style: TextStyle(
@@ -103,12 +118,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: Dimensions.paddingSizeExtremeLarge,
                       ),
 
-                      /// LOGIN CARD
+                      /// Login Card Container
                       Container(
                         padding: const EdgeInsets.all(
                           Dimensions.paddingSizeLarge,
                         ),
-
                         decoration: BoxDecoration(
                           color: AppColors.card,
                           borderRadius: BorderRadius.circular(
@@ -123,24 +137,33 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
 
+                        /// Form for validation
                         child: Form(
                           key: _formKey,
+
+                          /// Auto validate on user interaction
                           autovalidateMode: AutovalidateMode.onUserInteraction,
 
                           child: Column(
                             children: [
-                              /// EMAIL
+                              /// Email Field
                               CustomTextField(
                                 controller: emailController,
                                 label: "Email Address",
                                 prefixIcon: Icons.email_outlined,
                                 keyboardType: TextInputType.emailAddress,
+
+                                /// Email validation from Validators
                                 validator: Validators.email,
+
+                                /// Prevent spaces in email
                                 inputFormatters: [
                                   FilteringTextInputFormatter.deny(
                                     RegExp(r"\s"),
                                   ),
                                 ],
+
+                                /// Validate form on change
                                 onChanged: (_) => checkForm(),
                               ),
 
@@ -148,22 +171,27 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: Dimensions.paddingSizeDefault,
                               ),
 
-                              /// PASSWORD
+                              /// Password Field
                               CustomTextField(
                                 controller: passwordController,
                                 label: "Password",
                                 prefixIcon: Icons.lock_outline,
+
+                                /// Toggle password visibility
                                 obscureText: obscurePassword,
+
+                                /// Password validation
                                 validator: Validators.password,
+
                                 onChanged: (_) => checkForm(),
 
+                                /// Eye icon toggle
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     obscurePassword
                                         ? Icons.visibility_off
                                         : Icons.visibility,
                                   ),
-
                                   onPressed: () {
                                     setState(() {
                                       obscurePassword = !obscurePassword;
@@ -176,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: Dimensions.paddingSizeLarge,
                               ),
 
-                              /// LOGIN BUTTON
+                              /// Login Button
                               BlocBuilder<AuthBloc, AuthState>(
                                 builder: (context, state) {
                                   final isLoading = state is AuthLoading;
@@ -185,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     text: "Sign In",
                                     isLoading: isLoading,
 
+                                    /// Trigger login event
                                     onPressed: isFormValid
                                         ? () {
                                             FocusScope.of(context).unfocus();
@@ -211,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: Dimensions.paddingSizeLarge),
 
-                      /// FOOTER TEXT
+                      /// Footer Text
                       Text(
                         "Genio360 Visitor Management",
                         style: TextStyle(

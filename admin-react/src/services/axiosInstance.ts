@@ -7,6 +7,10 @@ interface QueueItem {
   reject: (error: unknown) => void;
 }
 
+/**
+ * Axios instance pre-configured with base URL and default headers.
+ * Centralizes API connection settings for the entire application.
+ */
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
@@ -17,6 +21,11 @@ const apiClient = axios.create({
 let isRefreshing = false;
 let failedQueue: QueueItem[] = [];
 
+/**
+ * Processes the queue of failed requests that occurred while token was being refreshed.
+ * @param error - Error encountered if refresh fails.
+ * @param token - New access token if refresh succeeds.
+ */
 const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (token) {
@@ -28,6 +37,10 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+/**
+ * Clears authentication data and redirects the user to the login page.
+ * Triggered upon session expiration or invalid refresh tokens.
+ */
 const handleLogout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('refreshToken');
@@ -35,6 +48,10 @@ const handleLogout = () => {
   globalThis.location.href = '/login';
 };
 
+/**
+ * Global Request Interceptor:
+ * Attaches the Bearer token to every outgoing request if it exists in local storage.
+ */
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('token');
@@ -48,6 +65,11 @@ apiClient.interceptors.request.use(
   }
 );
 
+/**
+ * Global Response Interceptor:
+ * Handles responses and implements silent token refresh logic for 401 Unauthorized errors.
+ * Queues concurrent requests during refresh to prevent multiple refresh calls.
+ */
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -57,12 +79,14 @@ apiClient.interceptors.response.use(
       throw error;
     }
 
+    // Check if error is 401 and request hasn't been retried yet (excluding auth routes)
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url?.includes('/auth/refresh-token') &&
       !originalRequest.url?.includes('/auth/login')
     ) {
+      // If refresh is already in progress, queue the request
       if (isRefreshing) {
         try {
           const token = await new Promise<string>((resolve, reject) => {
@@ -83,6 +107,7 @@ apiClient.interceptors.response.use(
 
       const refreshToken = localStorage.getItem('refreshToken');
 
+      // Logout if no refresh token is available
       if (!refreshToken) {
         isRefreshing = false;
         processQueue(error, null);
@@ -91,6 +116,7 @@ apiClient.interceptors.response.use(
       }
 
       try {
+        // Attempt to refresh the access token
         const response = await axios.post<RefreshTokenResponse>(
           `${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`,
           { refreshToken }
@@ -99,6 +125,7 @@ apiClient.interceptors.response.use(
         const { data } = response;
 
         if (data.success) {
+          // Store new tokens and retry original request
           localStorage.setItem('token', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
 

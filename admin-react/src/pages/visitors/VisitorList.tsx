@@ -97,34 +97,42 @@ const VisitorList: React.FC = () => {
         }
     }, [loading, error]);
 
+    // Function to fetch visitors data from API
     const loadVisitors = useCallback(() => {
         dispatch(fetchVisitorsRequest(params));
     }, [dispatch, params]);
 
+    // Effect to load visitors on component mount or parameter change
     useEffect(() => {
         loadVisitors();
     }, [loadVisitors]);
 
+    // Handle general parameter changes for filters and pagination
     const handleParamChange = (newParams: Partial<typeof params>) => {
         dispatch(setQueryParams({ ...newParams, page: newParams.page ?? 0 }));
     };
 
+    // Handle search text changes
     const handleSearchChange = (value: string) => {
         handleParamChange({ search: value });
     };
 
+    // Handle status filter changes
     const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         handleParamChange({ status: e.target.value });
     };
 
+    // Handle page navigation in pagination
     const handleChangePage = (_: unknown, newPage: number) => {
         dispatch(setQueryParams({ page: newPage }));
     };
 
+    // Handle rows per page changes
     const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setQueryParams({ limit: Number.parseInt(e.target.value, 10), page: 0 }));
     };
 
+    // Reset all filters to default values
     const handleReset = () => {
         dispatch(setQueryParams({
             page: 0,
@@ -135,6 +143,7 @@ const VisitorList: React.FC = () => {
         }));
     };
 
+    // Handle table sorting logic
     const handleSort = (property: string) => {
         const isAsc = params.sortBy === property && params.sortOrder === 'asc';
         dispatch(setQueryParams({
@@ -143,11 +152,13 @@ const VisitorList: React.FC = () => {
         }));
     };
 
+    // Open status update confirmation dialog
     const handleStatusUpdate = (id: number, status: Visitor['status']) => {
         setStatusPayload({ id, status });
         setStatusDialogOpen(true);
     };
 
+    // Confirm and execute visitor status update
     const confirmStatusUpdate = () => {
         if (statusPayload) {
             isUpdatingStatus.current = true;
@@ -157,11 +168,13 @@ const VisitorList: React.FC = () => {
         }
     };
 
+    // Open delete confirmation dialog
     const handleDelete = (id: number) => {
         setVisitorToDelete(id);
         setDeleteDialogOpen(true);
     };
 
+    // Confirm and execute visitor deletion
     const confirmDelete = () => {
         if (visitorToDelete) {
             isDeleting.current = true;
@@ -170,6 +183,7 @@ const VisitorList: React.FC = () => {
         }
     };
 
+    // Get status chip color based on visitor status
     const getStatusColor = (status: Visitor['status']) => {
         switch (status) {
             case 'APPROVED': return 'success';
@@ -178,16 +192,19 @@ const VisitorList: React.FC = () => {
         }
     };
 
+    // Open modal to add a new visitor
     const handleAddClick = () => {
         setSelectedVisitor(null);
         setModalVisitorOpen(true);
     };
 
+    // Open modal to edit an existing visitor
     const handleEditClick = (visitor: Visitor) => {
         setSelectedVisitor(visitor);
         setModalVisitorOpen(true);
     };
 
+    // Close the visitor add/edit modal
     const handleCloseVisitorModal = () => {
         setModalVisitorOpen(false);
         setSelectedVisitor(null);

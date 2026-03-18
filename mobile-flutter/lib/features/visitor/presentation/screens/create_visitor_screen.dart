@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,11 @@ import 'package:visitor_management/shared/widgets/custom_button.dart';
 import 'package:visitor_management/shared/widgets/custom_date_field.dart';
 import 'package:visitor_management/shared/widgets/custom_text_field.dart';
 
+/// CreateVisitorScreen
+/// This screen allows users to create a new visitor entry.
+/// It includes form validation, date selection, and Bloc integration
+/// for handling API requests and responses.
+
 class CreateVisitorScreen extends StatefulWidget {
   const CreateVisitorScreen({super.key});
 
@@ -20,27 +26,27 @@ class CreateVisitorScreen extends StatefulWidget {
 }
 
 class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
+  /// Form key used to validate all input fields
   final _formKey = GlobalKey<FormState>();
 
+  /// Controllers for text input fields
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final unitController = TextEditingController();
 
+  /// Stores selected visit date
   DateTime? visitDate;
 
+  /// Controls loading state of submit button
   bool isLoading = false;
+
+  /// Flag to show date validation error
   bool dateError = false;
+
+  /// Flag to trigger validation after first submit attempt
   bool isSubmitted = false;
 
-  /// Validation
-  String? validateRequired(String? value, String field) {
-    if (value == null || value.isEmpty) {
-      return "$field is required";
-    }
-
-    return null;
-  }
-
+  /// Checks if all fields have values (used to enable/disable submit button)
   bool get isFormValid {
     return nameController.text.isNotEmpty &&
         phoneController.text.isNotEmpty &&
@@ -48,11 +54,11 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
         visitDate != null;
   }
 
-  /// Date Picker
+  /// Opens date picker and updates selected date
   void pickDate() {
     DatePicker.showDatePicker(
       context,
-      minTime: DateTime.now(),
+      minTime: DateTime.now(), // Prevent past dates
       onConfirm: (date) {
         setState(() {
           visitDate = date;
@@ -62,25 +68,16 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
     );
   }
 
-  String? validatePhone(String? value) {
-    if (value == null || value.isEmpty) {
-      return "Phone number is required";
-    }
-
-    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
-      return "Enter valid 10 digit phone number";
-    }
-
-    return null;
-  }
-
+  /// Handles form submission
   void submitVisitor() {
     setState(() {
       isSubmitted = true;
     });
 
+    /// Validate all form fields
     if (!_formKey.currentState!.validate()) return;
 
+    /// Validate date selection separately
     if (visitDate == null) {
       setState(() => dateError = true);
       return;
@@ -90,6 +87,10 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
       isLoading = true;
     });
 
+    /// Dismiss keyboard
+    FocusScope.of(context).unfocus();
+
+    /// Trigger Bloc event to create visitor
     context.read<VisitorBloc>().add(
       CreateVisitor({
         "name": nameController.text.trim(),
@@ -104,6 +105,7 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
   Widget build(BuildContext context) {
     return BlocListener<VisitorBloc, VisitorState>(
       listener: (context, state) {
+        /// On successful visitor creation
         if (state is VisitorLoaded) {
           Navigator.pop(context);
 
@@ -112,20 +114,22 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
           );
         }
 
+        /// On error
         if (state is VisitorError) {
           setState(() {
             isLoading = false;
           });
 
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
 
       child: Scaffold(
         backgroundColor: AppColors.background,
 
+        /// App bar configuration
         appBar: AppBar(
           backgroundColor: AppColors.primary,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -139,61 +143,82 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
           ),
         ),
 
+        /// Main form container
         body: Padding(
           padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
 
           child: Form(
             key: _formKey,
+
+            /// Validation starts after first submit attempt
             autovalidateMode: isSubmitted
                 ? AutovalidateMode.always
                 : AutovalidateMode.disabled,
+
             child: Column(
               children: [
-                /// Visitor Name
+                /// Visitor Name Field
                 CustomTextField(
                   controller: nameController,
                   label: "Visitor Name",
                   prefixIcon: Icons.person,
+
+                  /// Name validation
                   validator: Validators.name,
+
+                  /// Allow only alphabets and spaces
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[a-zA-Z\s]'),
+                    ),
+                  ],
+
                   onChanged: (_) => setState(() {}),
                 ),
 
                 const SizedBox(height: Dimensions.paddingSizeDefault),
 
-                /// Phone
+                /// Phone Number Field
                 CustomTextField(
                   controller: phoneController,
                   label: "Phone Number",
                   prefixIcon: Icons.phone,
                   keyboardType: TextInputType.number,
+
+                  /// Phone validation
                   validator: Validators.phone,
-                  onChanged: (_) {
-                    if (phoneController.text.length > 10) {
-                      phoneController.text = phoneController.text.substring(
-                        0,
-                        10,
-                      );
-                      phoneController.selection = TextSelection.fromPosition(
-                        TextPosition(offset: phoneController.text.length),
-                      );
-                    }
-                    setState(() {});
-                  },
-                ),
 
-                const SizedBox(height: Dimensions.paddingSizeDefault),
+                  /// Allow only digits and limit to 10 characters
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
 
-                /// Unit
-                CustomTextField(
-                  controller: unitController,
-                  label: "Unit Number",
-                  prefixIcon: Icons.home,
-                  validator: Validators.unit,
                   onChanged: (_) => setState(() {}),
                 ),
 
                 const SizedBox(height: Dimensions.paddingSizeDefault),
 
+                /// Unit Number Field
+                CustomTextField(
+                  controller: unitController,
+                  label: "Unit Number",
+                  prefixIcon: Icons.home,
+
+                  /// Unit validation
+                  validator: Validators.unit,
+
+                  /// Limit input length
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(10),
+                  ],
+
+                  onChanged: (_) => setState(() {}),
+                ),
+
+                const SizedBox(height: Dimensions.paddingSizeDefault),
+
+                /// Visit Date Picker Field
                 CustomDateField(
                   hintText: "Select Visit Date",
                   value: visitDate == null
@@ -208,9 +233,9 @@ class _CreateVisitorScreenState extends State<CreateVisitorScreen> {
                 /// Submit Button
                 CustomButton(
                   text: "Submit",
-
                   isLoading: isLoading,
 
+                  /// Enabled only when form is filled
                   onPressed: isFormValid ? submitVisitor : null,
                 ),
               ],

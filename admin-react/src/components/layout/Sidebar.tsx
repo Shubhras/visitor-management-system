@@ -8,7 +8,6 @@ import {
     ListItemText,
 } from '@mui/material';
 import {
-    Dashboard as DashboardIcon,
     People as VisitorsIcon,
 } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -23,7 +22,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobile, onClose }) => {
     const location = useLocation();
 
     const menuItems = [
-        { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
         { text: 'Visitors', icon: <VisitorsIcon />, path: '/visitors' },
     ];
 

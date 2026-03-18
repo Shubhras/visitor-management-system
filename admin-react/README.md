@@ -13,7 +13,7 @@ A modern, high-performance Visitor Management System built with **React 19**, **
 
 ---
 
-## 🛠️ Getting Started
+##  Getting Started
 
 Follow these instructions to get the project up and running on your local machine.
 

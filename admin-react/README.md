@@ -20,7 +20,7 @@ Follow these instructions to get the project up and running on your local machin
 
 ### Prerequisites
 
-- **Node.js**: v18.x or higher
+- **Node.js**: v20.x or higher
 - **npm**: v9.x or higher
 
 ### Local Installation

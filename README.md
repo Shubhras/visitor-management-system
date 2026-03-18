@@ -217,6 +217,30 @@ npm install
 cd ../api-gateway
 npm install
 ```
+---
+
+## Database Setup (Run Once)
+
+Run database migrations and seeders during the first project setup.
+
+Auth Service
+```
+cd auth-service
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
+```
+
+User Service
+```
+cd user-service
+npx sequelize-cli db:migrate
+```
+
+Visitor Service
+```
+cd visitor-service
+npx sequelize-cli db:migrate
+```
 
 ---
 
@@ -406,3 +430,12 @@ Swagger documentation will be available from API Gateway.
 ```
 http://localhost:3000/api/docs
 ```
+---
+
+# ER Diagrams
+
+### Client to Gateway Flow
+![Client to Gateway Flow](ER-Diagram/Client%20to%20Gateway%20Flow.png)
+
+### Conceptual Database ER Diagram
+![Conceptual Database ER Diagram](ER-Diagram/Conceptual%20Database%20ER%20Diagram.png)

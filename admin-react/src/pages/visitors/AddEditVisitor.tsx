@@ -24,6 +24,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import type { Visitor } from '../../features/visitor/visitorTypes';
 
+// Zod validation schema for visitor form data
 const visitorSchema = z.object({
     name: z.string().min(1, { message: 'Name is required' }).min(3, { message: 'Name must be at least 3 characters' }).max(50, { message: 'Name cannot exceed 50 characters' }),
     phone: z.string()
@@ -43,12 +44,15 @@ interface AddEditVisitorProps {
     visitor?: Visitor | null;
 }
 
+
 const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor }) => {
     const dispatch = useAppDispatch();
     const { loading, error, success } = useAppSelector((state) => state.visitor);
 
+    // Determine if the form is in edit mode based on visitor prop
     const isEditMode = !!visitor;
 
+    // Initialize react-hook-form with Zod resolver and default values
     const {
         register,
         handleSubmit,
@@ -103,6 +107,7 @@ const AddEditVisitor: React.FC<AddEditVisitorProps> = ({ open, onClose, visitor 
         }
     }, [error]);
 
+    // Function to handle form submission for both add and update
     const onSubmit = (data: VisitorFormValues) => {
         if (isEditMode && visitor) {
             dispatch(updateVisitorRequest({ id: visitor.id, ...data }));

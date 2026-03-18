@@ -3,11 +3,20 @@ import { TextField, InputAdornment, useTheme } from '@mui/material';
 import type { TextFieldProps } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 
+/**
+ * Props for the SearchTableFilter component.
+ */
 type SearchTableFilterProps = Omit<TextFieldProps, 'onChange'> & {
+    /** Current search value */
     value: string;
+    /** Callback when value changes */
     onChange: (value: string) => void;
 };
 
+/**
+ * A reusable search input component designed for table filtering.
+ * 
+ */
 const SearchTableFilter: React.FC<SearchTableFilterProps> = ({
     value,
     onChange,

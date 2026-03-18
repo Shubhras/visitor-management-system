@@ -1,7 +1,14 @@
+/**
+ * File: visitorSlice.ts
+ * Purpose: Redux Toolkit slice for managing visitor-related state and actions.
+ * Handles fetching, adding, updating, and deleting visitors.
+ */
+
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Visitor, VisitorsState, AddVisitorPayload, UpdateVisitorPayload, VisitorQueryParams, FetchVisitorsResponse } from './visitorTypes';
 
+// Initial state for the visitors module
 const initialState: VisitorsState = {
     list: [],
     total: 0,
@@ -18,10 +25,12 @@ const initialState: VisitorsState = {
     },
 };
 
+// Slice definition containing all reducers and actions
 const visitorsSlice = createSlice({
     name: 'visitors',
     initialState,
     reducers: {
+        // Reducers for fetching visitors list
         fetchVisitorsRequest: (state, action: PayloadAction<VisitorQueryParams>) => {
             state.params = action.payload;
             state.loading = true;
@@ -37,6 +46,8 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+
+        // Reducers for adding a new visitor
         addVisitorRequest: (state, _action: PayloadAction<AddVisitorPayload>) => {
             state.loading = true;
         },
@@ -50,6 +61,8 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+
+        // Reducers for updating an existing visitor record
         updateVisitorRequest: (state, _action: PayloadAction<UpdateVisitorPayload>) => {
             state.loading = true;
         },
@@ -65,6 +78,8 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+
+        // Reducers for updating visitor status (Pending/Approved/Rejected)
         updateVisitorStatusRequest: (state, _action: PayloadAction<{ id: number; status: Visitor['status'] }>) => {
             state.loading = true;
         },
@@ -79,6 +94,8 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+
+        // Reducers for deleting a visitor record
         deleteVisitorRequest: (state, _action: PayloadAction<number>) => {
             state.loading = true;
         },
@@ -91,6 +108,8 @@ const visitorsSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+
+        // Action to update query parameters (search, pagination, etc.)
         setQueryParams: (state, action: PayloadAction<Partial<VisitorQueryParams>>) => {
             state.params = { ...state.params, ...action.payload };
             // Reset to page 0 when filters change (unless page itself is being set)
@@ -98,6 +117,8 @@ const visitorsSlice = createSlice({
                 state.params.page = 0;
             }
         },
+
+        // Action to reset the success flag
         clearVisitorSuccess: (state) => {
             state.success = false;
         },

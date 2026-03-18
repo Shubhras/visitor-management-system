@@ -11,10 +11,11 @@ import 'package:visitor_management/shared/widgets/shimmer_loading.dart';
 import 'package:visitor_management/shared/widgets/visitor_card.dart';
 
 /// VisitorListScreen
-/// Displays list of visitors with pagination support.
-/// Handles loading, error, and empty states using Bloc.
+/// Displays the list of visitors with pagination and pull-to-refresh functionality.
+/// Handles different UI states such as loading, error, empty, and success using Bloc.
 
 class VisitorListScreen extends StatefulWidget {
+  /// Callback to open navigation drawer
   final VoidCallback openDrawer;
 
   const VisitorListScreen({super.key, required this.openDrawer});
@@ -24,27 +25,33 @@ class VisitorListScreen extends StatefulWidget {
 }
 
 class _VisitorListScreenState extends State<VisitorListScreen> {
-  /// Controller for detecting scroll position (used for pagination)
+  /// Scroll controller used for pagination detection
   final ScrollController _scrollController = ScrollController();
-
-  /// Current page identifier (can be extended for tabs/navigation)
-  String currentPage = "visitors";
 
   @override
   void initState() {
     super.initState();
 
-    /// Initial API call to fetch visitors
+    /// Trigger initial API call to fetch visitors
     context.read<VisitorBloc>().add(FetchVisitors());
 
-    /// Pagination listener
+    /// Listen for scroll events to implement infinite scrolling
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
+      if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent) {
-        /// Trigger load more when reached bottom
+        /// Load next page when user reaches bottom
         context.read<VisitorBloc>().add(LoadMoreVisitors());
       }
     });
+  }
+
+  /// Handles pull-to-refresh action
+  /// Triggers refresh event without showing shimmer
+  Future<void> _onRefresh() async {
+    context.read<VisitorBloc>().add(RefreshVisitors());
+
+    /// Small delay to ensure refresh animation is visible
+    await Future.delayed(const Duration(milliseconds: 600));
   }
 
   @override
@@ -52,81 +59,98 @@ class _VisitorListScreenState extends State<VisitorListScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
 
-      /// Custom AppBar with drawer toggle
+      /// Custom AppBar with drawer action
       appBar: AppBarWidget(
         title: "Visitors List",
         onMenuTap: widget.openDrawer,
       ),
 
-      /// Floating action button to create new visitor
+      /// Floating action button for creating a new visitor
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primary,
         onPressed: () {
+          /// Navigation can be added here for CreateVisitorScreen
           print("Visitor Create Screen");
         },
         child: const Icon(Icons.add, color: AppColors.textLight),
       ),
 
-      /// Main body containing visitor list
+      /// Main content area
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: Dimensions.paddingSizeDefault,
         ),
 
-        /// Listener for error handling
+        /// Listener for handling one-time effects such as showing error messages
         child: BlocListener<VisitorBloc, VisitorState>(
           listener: (context, state) {
             if (state is VisitorError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
 
-          /// Builder for UI rendering based on state
+          /// Builder for rendering UI based on current state
           child: BlocBuilder<VisitorBloc, VisitorState>(
             builder: (context, state) {
-              /// Loading state with shimmer UI
+              /// Initial loading state (first API call)
               if (state is VisitorLoading) {
                 return const ShimmerLoading();
               }
 
-              /// Error state with retry UI
+              /// Error state
               if (state is VisitorError) {
                 return CustomErrorWidget(message: state.message);
               }
 
-              /// Success state
+              /// Data loaded successfully
               if (state is VisitorLoaded) {
-                /// Empty state UI
+                /// Empty state with pull-to-refresh support
                 if (state.visitors.isEmpty) {
-                  return Center(
-                    child: Text(
-                      "No Visitors Found",
-                      style: TextStyle(
-                        fontSize: Dimensions.fontSizeDefault(context),
-                      ),
+                  return RefreshIndicator(
+                    onRefresh: _onRefresh,
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: Center(
+                            child: Text(
+                              "No Visitors Found",
+                              style: TextStyle(
+                                fontSize: Dimensions.fontSizeDefault(context),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
 
-                /// Visitor list with pagination
-                return ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: Dimensions.paddingSizeSmall,
-                  ),
-                  itemCount: state.visitors.length,
-                  itemBuilder: (context, index) {
-                    final visitor = state.visitors[index];
+                /// List view with pagination and pull-to-refresh
+                return RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    /// Ensures refresh works even with small lists
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: Dimensions.paddingSizeSmall,
+                    ),
+                    itemCount: state.visitors.length,
+                    itemBuilder: (context, index) {
+                      final visitor = state.visitors[index];
 
-                    /// Individual visitor card
-                    return VisitorCard(visitor: visitor);
-                  },
+                      /// Individual visitor card
+                      return VisitorCard(visitor: visitor);
+                    },
+                  ),
                 );
               }
 
-              /// Default fallback
+              /// Fallback UI (should rarely be reached)
               return const SizedBox();
             },
           ),

@@ -9,7 +9,9 @@ import 'package:visitor_management/features/visitor/presentation/bloc/visitor_bl
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await dotenv.load(fileName: ".env");
+  const env = String.fromEnvironment('ENV', defaultValue: 'dev');
+
+  await dotenv.load(fileName: ".env.$env");
 
   runApp(const MyApp());
 }
@@ -20,7 +22,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ApiService apiService = ApiService();
-
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(create: (_) => AuthBloc(apiService)),

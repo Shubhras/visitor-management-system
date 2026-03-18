@@ -4,7 +4,6 @@ A modern, high-performance Visitor Management System built with **React 19**, **
 
 ##  Key Features
 
-- **Intuitive Dashboard**: Overview of visitor statistics and system status.
 - **Advanced Visitor Management**: Full CRUD (Create, Read, Update, Delete) operations for visitors.
 - **Status Workflow**: Approve or Reject visitor requests with instant UI feedback.
 - **Smart Filtering**: Search and filter visitors by name, status, or date.

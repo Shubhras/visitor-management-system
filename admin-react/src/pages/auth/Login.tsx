@@ -1,3 +1,4 @@
+// External library imports for React, MUI components, and icons
 import React, { useEffect, useState } from 'react';
 import {
     Box,
@@ -21,38 +22,53 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import loginBg from '../../assets/login-bg.png';
 import toast from 'react-hot-toast';
 
+// Define the validation schema for the login form using Zod
 const loginSchema = z.object({
-    email: z.email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    email: z.string()
+        .min(1, { error: 'Email is required' })
+        .pipe(z.email({ error: 'Invalid email address' })),
+    password: z.string()
+        .min(1, { error: 'Password is required' })
+        .min(6, { error: 'Password must be at least 6 characters' }),
 });
 
+// Infer values type from schema
 type LoginFormValues = z.infer<typeof loginSchema>;
 
+/**
+ * Login Component: Handles user authentication and provides the login interface.
+ */
 const Login: React.FC = () => {
     const theme = useTheme();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
-    const [showPassword, setShowPassword] = useState(false);
+    const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth); // Auth state from Redux
+    const [showPassword, setShowPassword] = useState(false); // Local state for password visibility
 
+    // Toggle password visibility
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+    // Prevent default mouse behavior on password toggle
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
 
+    // Effect to handle navigation on successful authentication
     useEffect(() => {
         if (isAuthenticated) {
+            toast.success('Login successful!');
             navigate('/dashboard');
         }
     }, [isAuthenticated, navigate]);
 
+    // Effect to display error messages when authentication fails
     useEffect(() => {
         if (error) {
             toast.error(error);
         }
     }, [error]);
 
+    // React-hook-form initialization with Zod validation
     const {
         register,
         handleSubmit,
@@ -61,6 +77,7 @@ const Login: React.FC = () => {
         resolver: zodResolver(loginSchema),
     });
 
+    // Submit handler to dispatch login request
     const onSubmit = (data: LoginFormValues) => {
         dispatch(loginRequest(data));
     };
@@ -146,7 +163,7 @@ const Login: React.FC = () => {
                     </Box>
                 </Box>
 
-                {/* Right Side - Form */}
+                {/* Right Side - Login Form Section */}
                 <Box
                     sx={{
                         flex: 1,

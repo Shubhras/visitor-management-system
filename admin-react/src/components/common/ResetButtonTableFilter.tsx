@@ -3,10 +3,18 @@ import { Button } from '@mui/material';
 import type { ButtonProps } from '@mui/material';
 import { RestartAlt as ResetIcon } from '@mui/icons-material';
 
+/**
+ * Props for the ResetButtonTableFilter component.
+ */
 interface ResetButtonTableFilterProps extends ButtonProps {
+    /** Callback when reset button is clicked */
     onReset: () => void;
 }
 
+/**
+ * A reusable reset button component used for clearing table filters.
+ *
+ */
 const ResetButtonTableFilter: React.FC<ResetButtonTableFilterProps> = ({ onReset, sx, ...props }) => {
     return (
         <Button

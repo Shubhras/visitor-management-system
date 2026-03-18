@@ -2,7 +2,7 @@
 
 A modern, high-performance Visitor Management System built with **React 19**, **TypeScript**, and **Material UI**. This admin panel allows for efficient visitor tracking, status management (Approve/Reject), and real-time monitoring.
 
-## 🚀 Key Features
+##  Key Features
 
 - **Intuitive Dashboard**: Overview of visitor statistics and system status.
 - **Advanced Visitor Management**: Full CRUD (Create, Read, Update, Delete) operations for visitors.
@@ -51,7 +51,7 @@ Follow these instructions to get the project up and running on your local machin
 
 ---
 
-## ⚙️ Environment Configuration
+##  Environment Configuration
 
 The project uses mode-based configurations for different stages:
 
@@ -70,7 +70,7 @@ npm run build -- --mode production
 
 ---
 
-## 📦 Tech Stack
+##  Tech Stack
 
 - **Core**: React 19, TypeScript, Vite
 - **UI Framework**: Material UI (MUI) v7
@@ -83,7 +83,7 @@ npm run build -- --mode production
 
 ---
 
-## 📜 Available Scripts
+##  Available Scripts
 
 - `npm run dev`: Starts the local development server on port 3001.
 - `npm run build`: Compiles the application for production.
@@ -92,7 +92,7 @@ npm run build -- --mode production
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 1. **Build the project**: `npm run build`
 2. **Output**: The optimized files will be in the `dist/` directory.

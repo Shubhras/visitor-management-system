@@ -36,6 +36,12 @@ interface AxiosErrorResponse {
     };
 }
 
+/**
+ * Utility function to extract clear error messages from Axios or generic errors.
+ * @param error - The error object caught in try-catch.
+ * @param fallback - Default message if extraction fails.
+ * @returns {string} - The most relevant error message found.
+ */
 function getErrorMessage(error: unknown, fallback: string): string {
     if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as AxiosErrorResponse;
@@ -46,6 +52,11 @@ function getErrorMessage(error: unknown, fallback: string): string {
     return error instanceof Error ? error.message : fallback;
 }
 
+/**
+ * Saga for fetching all visitors with dynamic filters, search, and pagination.
+ * Dispatches success or failure actions based on API response.
+ * @param action - Contains the QueryParams payload.
+ */
 function* fetchVisitorsSaga(action: PayloadAction<VisitorQueryParams>) {
     try {
         const params = action.payload;
@@ -81,6 +92,11 @@ function* fetchVisitorsSaga(action: PayloadAction<VisitorQueryParams>) {
     }
 }
 
+/**
+ * Saga for adding a new visitor entry via the API.
+ * Validates the response status before updating the Redux state.
+ * @param action - Contains the AddVisitorPayload.
+ */
 function* addVisitorSaga(action: PayloadAction<AddVisitorPayload>) {
     try {
         const response: AxiosResponse<VisitorApiResponse> = yield call(
@@ -99,6 +115,11 @@ function* addVisitorSaga(action: PayloadAction<AddVisitorPayload>) {
     }
 }
 
+/**
+ * Saga for updating a visitor's status (APPROVE/REJECT).
+ * Maps the status to the corresponding API endpoint.
+ * @param action - Contains visitor ID and new status.
+ */
 function* updateVisitorStatusSaga(action: PayloadAction<{ id: number; status: Visitor['status'] }>) {
     try {
         const { id, status } = action.payload;
@@ -119,6 +140,11 @@ function* updateVisitorStatusSaga(action: PayloadAction<{ id: number; status: Vi
     }
 }
 
+/**
+ * Saga for updating general visitor details.
+ * Dispatches updateVisitorSuccess with the updated record.
+ * @param action - Contains the UpdateVisitorPayload.
+ */
 function* updateVisitorSaga(action: PayloadAction<UpdateVisitorPayload>) {
     try {
         const { id, ...data } = action.payload;
@@ -138,6 +164,11 @@ function* updateVisitorSaga(action: PayloadAction<UpdateVisitorPayload>) {
     }
 }
 
+/**
+ * Saga for deleting a visitor record by ID.
+ * Refreshes or removes the visitor from the state upon success.
+ * @param action - Contains the visitor ID as numeric payload.
+ */
 function* deleteVisitorSaga(action: PayloadAction<number>) {
     try {
         const response: AxiosResponse<{ success: boolean; message?: string }> = yield call(
@@ -155,6 +186,10 @@ function* deleteVisitorSaga(action: PayloadAction<number>) {
     }
 }
 
+/**
+ * Root Visitor Saga: Watches for all visitor-related action requests.
+ * Uses takeLatest to ensure only the most recent request is processed.
+ */
 export default function* visitorSaga() {
     yield takeLatest(fetchVisitorsRequest.type, fetchVisitorsSaga);
     yield takeLatest(addVisitorRequest.type, addVisitorSaga);

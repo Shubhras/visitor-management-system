@@ -14,6 +14,9 @@ import {
     ReportProblemOutlined as WarningAmberIcon
 } from '@mui/icons-material';
 
+/**
+ * Props for the ConfirmationPopup component.
+ */
 type ConfirmationPopupProps = {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -24,6 +27,11 @@ type ConfirmationPopupProps = {
     confirmColor?: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
 };
 
+/**
+ * A highly reusable and customizable confirmation dialog.
+ * Automatically adjusts icons and colors based on the 'confirmColor' prop.
+ * Used for delete confirmations, status changes, and other critical actions.
+ */
 const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
     open,
     setOpen,
@@ -42,32 +50,35 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({
         }
     };
 
+    /**
+     * Internal helper to determine icon and color mapping based on confirmColor
+     */
     const getIconConfig = () => {
         switch (confirmColor) {
             case 'success':
                 return {
                     Icon: SuccessIcon,
-                    bgColor: '#f0fdf4', // light green
-                    iconColor: '#22c55e', // green
+                    bgColor: '#f0fdf4',
+                    iconColor: '#22c55e',
                 };
             case 'error':
                 return {
                     Icon: ErrorIcon,
-                    bgColor: '#fef2f2', // light red
-                    iconColor: '#ef4444', // red
+                    bgColor: '#fef2f2',
+                    iconColor: '#ef4444',
                 };
             case 'warning':
                 return {
                     Icon: WarningAmberIcon,
-                    bgColor: '#fff7ed', // light orange
-                    iconColor: '#f59e0b', // orange
+                    bgColor: '#fff7ed',
+                    iconColor: '#f59e0b',
                 };
             case 'info':
             case 'primary':
                 return {
                     Icon: InfoIcon,
-                    bgColor: '#f0f9ff', // light blue
-                    iconColor: '#3b82f6', // blue
+                    bgColor: '#f0f9ff',
+                    iconColor: '#3b82f6',
                 };
             default:
                 return {

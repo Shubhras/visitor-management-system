@@ -75,6 +75,7 @@ const VisitorList: React.FC = () => {
     // Action tracking logic
     const isDeleting = useRef(false);
     const isUpdatingStatus = useRef(false);
+    const lastUpdatedStatus = useRef<Visitor['status'] | null>(null);
 
     // Notifications for List Actions
     useEffect(() => {
@@ -84,8 +85,10 @@ const VisitorList: React.FC = () => {
                 isDeleting.current = false;
             }
             if (isUpdatingStatus.current) {
-                toast.success('Status updated successfully!');
+                const message = lastUpdatedStatus.current === 'APPROVED' ? 'Approved successfully' : 'Rejected successfully';
+                toast.success(message);
                 isUpdatingStatus.current = false;
+                lastUpdatedStatus.current = null;
             }
         }
         if (!loading && error) {
@@ -94,34 +97,42 @@ const VisitorList: React.FC = () => {
         }
     }, [loading, error]);
 
+    // Function to fetch visitors data from API
     const loadVisitors = useCallback(() => {
         dispatch(fetchVisitorsRequest(params));
     }, [dispatch, params]);
 
+    // Effect to load visitors on component mount or parameter change
     useEffect(() => {
         loadVisitors();
     }, [loadVisitors]);
 
+    // Handle general parameter changes for filters and pagination
     const handleParamChange = (newParams: Partial<typeof params>) => {
         dispatch(setQueryParams({ ...newParams, page: newParams.page ?? 0 }));
     };
 
+    // Handle search text changes
     const handleSearchChange = (value: string) => {
         handleParamChange({ search: value });
     };
 
+    // Handle status filter changes
     const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         handleParamChange({ status: e.target.value });
     };
 
+    // Handle page navigation in pagination
     const handleChangePage = (_: unknown, newPage: number) => {
         dispatch(setQueryParams({ page: newPage }));
     };
 
+    // Handle rows per page changes
     const handleChangeRowsPerPage = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(setQueryParams({ limit: Number.parseInt(e.target.value, 10), page: 0 }));
     };
 
+    // Reset all filters to default values
     const handleReset = () => {
         dispatch(setQueryParams({
             page: 0,
@@ -132,6 +143,7 @@ const VisitorList: React.FC = () => {
         }));
     };
 
+    // Handle table sorting logic
     const handleSort = (property: string) => {
         const isAsc = params.sortBy === property && params.sortOrder === 'asc';
         dispatch(setQueryParams({
@@ -140,24 +152,29 @@ const VisitorList: React.FC = () => {
         }));
     };
 
+    // Open status update confirmation dialog
     const handleStatusUpdate = (id: number, status: Visitor['status']) => {
         setStatusPayload({ id, status });
         setStatusDialogOpen(true);
     };
 
+    // Confirm and execute visitor status update
     const confirmStatusUpdate = () => {
         if (statusPayload) {
             isUpdatingStatus.current = true;
+            lastUpdatedStatus.current = statusPayload.status;
             dispatch(updateVisitorStatusRequest(statusPayload));
             setStatusPayload(null);
         }
     };
 
+    // Open delete confirmation dialog
     const handleDelete = (id: number) => {
         setVisitorToDelete(id);
         setDeleteDialogOpen(true);
     };
 
+    // Confirm and execute visitor deletion
     const confirmDelete = () => {
         if (visitorToDelete) {
             isDeleting.current = true;
@@ -166,6 +183,7 @@ const VisitorList: React.FC = () => {
         }
     };
 
+    // Get status chip color based on visitor status
     const getStatusColor = (status: Visitor['status']) => {
         switch (status) {
             case 'APPROVED': return 'success';
@@ -174,16 +192,19 @@ const VisitorList: React.FC = () => {
         }
     };
 
+    // Open modal to add a new visitor
     const handleAddClick = () => {
         setSelectedVisitor(null);
         setModalVisitorOpen(true);
     };
 
+    // Open modal to edit an existing visitor
     const handleEditClick = (visitor: Visitor) => {
         setSelectedVisitor(visitor);
         setModalVisitorOpen(true);
     };
 
+    // Close the visitor add/edit modal
     const handleCloseVisitorModal = () => {
         setModalVisitorOpen(false);
         setSelectedVisitor(null);
@@ -242,66 +263,64 @@ const VisitorList: React.FC = () => {
             label: 'Action',
             minWidth: 150,
             align: 'center',
-            render: (visitor) => (
-                <ActionStack>
-                    <Tooltip title="Approve">
-                        <span>
+            render: (visitor: Visitor) => {
+                const isPending = visitor.status === 'PENDING';
+                return (
+                    <ActionStack>
+                        {isPending && (
+                            <>
+                                <Tooltip title="Approve">
+                                    <span>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
+                                            className="btn-action btn-approve"
+                                            sx={{ color: "#15803d" }}
+                                        >
+                                            <ApproveIcon fontSize="small" />
+                                        </IconButton>
+                                    </span>
+                                </Tooltip>
+                                <Tooltip title="Reject">
+                                    <span>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
+                                            className="btn-action btn-reject"
+                                            sx={{ color: "#b91c1c" }}
+                                        >
+                                            <RejectIcon fontSize="small" />
+                                        </IconButton>
+                                    </span>
+                                </Tooltip>
+                            </>
+                        )}
+                        <Tooltip title="Edit">
                             <IconButton
-                                color="success"
                                 size="small"
-                                onClick={() => handleStatusUpdate(visitor.id, 'APPROVED')}
-                                disabled={visitor.status === 'APPROVED'}
-                                sx={{
-                                    bgcolor: visitor.status === 'APPROVED' ? 'transparent' : 'rgba(74, 222, 128, 0.1)',
-                                    '&:hover': { bgcolor: 'rgba(74, 222, 128, 0.2)' }
-                                }}
+                                onClick={() => handleEditClick(visitor)}
+                                className="btn-action btn-edit"
                             >
-                                <ApproveIcon fontSize="small" />
+                                <EditIcon fontSize="small" />
                             </IconButton>
-                        </span>
-                    </Tooltip>
-                    <Tooltip title="Reject">
-                        <span>
+                        </Tooltip>
+                        <Tooltip title="Delete">
                             <IconButton
-                                color="error"
                                 size="small"
-                                onClick={() => handleStatusUpdate(visitor.id, 'REJECTED')}
-                                disabled={visitor.status === 'REJECTED'}
-                                sx={{
-                                    bgcolor: visitor.status === 'REJECTED' ? 'transparent' : 'rgba(248, 113, 113, 0.1)',
-                                    '&:hover': { bgcolor: 'rgba(248, 113, 113, 0.2)' }
-                                }}
+                                onClick={() => handleDelete(visitor.id)}
+                                className="btn-action btn-delete"
                             >
-                                <RejectIcon fontSize="small" />
+                                <DeleteIcon fontSize="small" />
                             </IconButton>
-                        </span>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                        <IconButton
-                            color="primary"
-                            size="small"
-                            onClick={() => handleEditClick(visitor)}
-                            sx={{ bgcolor: '#eff6ff', '&:hover': { bgcolor: '#dbeafe' } }}
-                        >
-                            <EditIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton
-                            size="small"
-                            onClick={() => handleDelete(visitor.id)}
-                            sx={{ color: '#94a3b8', bgcolor: '#f1f5f9', '&:hover': { bgcolor: '#e2e8f0', color: '#ef4444' } }}
-                        >
-                            <DeleteIcon fontSize="small" />
-                        </IconButton>
-                    </Tooltip>
-                </ActionStack>
-            )
+                        </Tooltip>
+                    </ActionStack>
+                );
+            }
         }
     ];
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
             <Typography variant="h4" sx={{ mb: 4 }}>
                 Visitor Management
             </Typography>
@@ -340,7 +359,6 @@ const VisitorList: React.FC = () => {
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
                 <Stack direction="row" spacing={2} sx={{ width: { xs: '100%', md: 'auto' }, justifyContent: 'flex-end' }}>
                     <ResetButtonTableFilter onReset={handleReset} />
-
                     <Button
                         variant="contained"
                         startIcon={<AddIcon />}
@@ -360,87 +378,89 @@ const VisitorList: React.FC = () => {
             </Stack>
 
             {/* Config-driven Table Section */}
-            <StyledTableContainer component={Paper}>
-                {loading && (
-                    <Box sx={{
-                        position: 'absolute',
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        bgcolor: 'rgba(255,255,255,0.7)',
-                        zIndex: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <Loader />
-                    </Box>
-                )}
+            <Box className="table-responsive-container">
+                <StyledTableContainer component={Paper} sx={{ display: 'flex', flexDirection: 'column' }}>
+                    {loading && (
+                        <Box sx={{
+                            position: 'absolute',
+                            top: 0, left: 0, right: 0, bottom: 0,
+                            bgcolor: 'rgba(255,255,255,0.7)',
+                            zIndex: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Loader />
+                        </Box>
+                    )}
 
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {columns.map((column) => (
-                                <StyledHeaderCell
-                                    key={column.id}
-                                    align={column.align}
-                                    style={{ minWidth: column.minWidth }}
-                                >
-                                    {column.sortable ? (
-                                        <TableSortLabel
-                                            active={params.sortBy === column.id}
-                                            direction={params.sortBy === column.id ? params.sortOrder : 'asc'}
-                                            onClick={() => handleSort(column.id)}
-                                        >
-                                            {column.label}
-                                        </TableSortLabel>
-                                    ) : (
-                                        column.label
-                                    )}
-                                </StyledHeaderCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {list.map((visitor, index) => (
-                            <StyledTableRow key={visitor.id} hover>
-                                {columns.map((column) => (
-                                    <TableCell key={column.id} align={column.align}>
-                                        {column.render
-                                            ? column.render(visitor, index)
-                                            : visitor[column.id as keyof Visitor]
-                                        }
-                                    </TableCell>
-                                ))}
-                            </StyledTableRow>
-                        ))}
-                        {list.length === 0 && !loading && (
+                    <Table stickyHeader>
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={columns.length} align="center" sx={{ py: 10 }}>
-                                    <Box sx={{ opacity: 0.5, textAlign: 'center' }}>
-                                        <PeopleIcon sx={{ fontSize: 60, mb: 1, color: 'text.secondary' }} />
-                                        <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
-                                            No visitors found
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Try adjusting your search or filters
-                                        </Typography>
-                                    </Box>
-                                </TableCell>
+                                {columns.map((column) => (
+                                    <StyledHeaderCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ minWidth: column.minWidth }}
+                                    >
+                                        {column.sortable ? (
+                                            <TableSortLabel
+                                                active={params.sortBy === column.id}
+                                                direction={params.sortBy === column.id ? params.sortOrder : 'asc'}
+                                                onClick={() => handleSort(column.id)}
+                                            >
+                                                {column.label}
+                                            </TableSortLabel>
+                                        ) : (
+                                            column.label
+                                        )}
+                                    </StyledHeaderCell>
+                                ))}
                             </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {list.map((visitor, index) => (
+                                <StyledTableRow key={visitor.id} hover>
+                                    {columns.map((column) => (
+                                        <TableCell key={column.id} align={column.align}>
+                                            {column.render
+                                                ? column.render(visitor, index)
+                                                : visitor[column.id as keyof Visitor]
+                                            }
+                                        </TableCell>
+                                    ))}
+                                </StyledTableRow>
+                            ))}
+                            {list.length === 0 && !loading && (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} align="center" sx={{ py: 10 }}>
+                                        <Box sx={{ opacity: 0.5, textAlign: 'center' }}>
+                                            <PeopleIcon sx={{ fontSize: 60, mb: 1, color: 'text.secondary' }} />
+                                            <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                No visitors found
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                Try adjusting your search or filters
+                                            </Typography>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
 
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 50]}
-                    component="div"
-                    count={total}
-                    rowsPerPage={params.limit}
-                    page={params.page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    sx={{ borderTop: `1px solid ${theme.palette.divider}` }}
-                />
-            </StyledTableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[10, 25, 50]}
+                        component="div"
+                        count={total}
+                        rowsPerPage={params.limit}
+                        page={params.page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        sx={{ borderTop: `1px solid ${theme.palette.divider}` }}
+                    />
+                </StyledTableContainer>
+            </Box>
             {/* Add/Edit Popup */}
             <AddEditVisitor
                 open={modalVisitorOpen}

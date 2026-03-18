@@ -1,11 +1,19 @@
 import React from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
+/**
+ * Props for the Loader component.
+ */
 interface LoaderProps {
+    /** Loading message to display below the spinner */
     message?: string;
+    /** Whether to take up the full viewport height (100vh) */
     fullPage?: boolean;
 }
 
+/**
+ * A generic loading spinner component with an optional message.
+ */
 const Loader: React.FC<LoaderProps> = ({ message = 'Loading...', fullPage = false }) => {
     return (
         <Box
